@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineArtGallery.Data;
 
@@ -11,9 +12,11 @@ using OnlineArtGallery.Data;
 namespace OnlineArtGallery.Migrations
 {
     [DbContext(typeof(OnlineArtGalleryContext))]
-    partial class OnlineArtGalleryContextModelSnapshot : ModelSnapshot
+    [Migration("20250112193247_Initial1")]
+    partial class Initial1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -261,20 +264,6 @@ namespace OnlineArtGallery.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Artwork");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedBy = "System",
-                            DateCreated = new DateTime(2025, 1, 13, 3, 52, 28, 496, DateTimeKind.Local).AddTicks(7561),
-                            DateUpdated = new DateTime(2025, 1, 13, 3, 52, 28, 496, DateTimeKind.Local).AddTicks(7575),
-                            Description = "A Monkey",
-                            Image = "idkhowtoshowimage",
-                            Name = "Monkey",
-                            Price = 0.01,
-                            UpdatedBy = "System"
-                        });
                 });
 
             modelBuilder.Entity("OnlineArtGallery.Domain.User", b =>

@@ -1,0 +1,43 @@
+﻿@page "/create"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using OnlineArtGallery.Domain
+@using OnlineArtGallery.Data
+@implements IAsyncDisposable
+@inject IDbContextFactory<OnlineArtGallery.Data.OnlineArtGalleryContext> DbFactory
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="create/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.Artwork">
+    <PropertyColumn Property="artwork => artwork.Name" />
+    <PropertyColumn Property="artwork => artwork.Description" />
+    <PropertyColumn Property="artwork => artwork.Price" />
+    <PropertyColumn Property="artwork => artwork.Image" />
+    <PropertyColumn Property="artwork => artwork.DateCreated" />
+    <PropertyColumn Property="artwork => artwork.DateUpdated" />
+    <PropertyColumn Property="artwork => artwork.CreatedBy" />
+    <PropertyColumn Property="artwork => artwork.UpdatedBy" />
+
+    <TemplateColumn Context="artwork">
+        <a href="@($"create/edit?id={artwork.Id}")">Edit</a> |
+        <a href="@($"create/details?id={artwork.Id}")">Details</a> |
+        <a href="@($"ccreate/delete?id={artwork.Id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private OnlineArtGalleryContext context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}
