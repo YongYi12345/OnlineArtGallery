@@ -1,4 +1,7 @@
-﻿namespace OnlineArtGallery.Domain
+﻿using Microsoft.AspNetCore.Mvc.TagHelpers;
+using System.Drawing;
+
+namespace OnlineArtGallery.Domain
 {
     public class Artwork : BaseDomainModel
     {

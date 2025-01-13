@@ -11,12 +11,15 @@ namespace OnlineArtGallery.Data
 
         public DbSet<OnlineArtGallery.Domain.User> User { get; set; } = default!;
         public DbSet<OnlineArtGallery.Domain.Artwork> Artwork { get; set; } = default!;
+        public DbSet<OnlineArtGallery.Domain.Wishlist> Wishlist { get; set; } = default!;
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
             builder.ApplyConfiguration(new ArtworkSeed());
+            builder.ApplyConfiguration(new WishlistSeed());
         }
+        
     }
 }

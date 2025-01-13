@@ -34,7 +34,7 @@ else
                 </div>
                 <div class="mb-3">
                     <label for="price" class="form-label">Price:</label>
-                    <InputNumber id="price" @bind-Value="Artwork.Price" class="form-control" />
+                    <InputNumber id="price" @bind-Value="Artwork.Price" class="form-control"/>
                     <ValidationMessage For="() => Artwork.Price" class="text-danger" />
                 </div>
                 <div class="mb-3">
@@ -69,7 +69,7 @@ else
 }
 
 <div>
-    <a href="/artworks">Back to List</a>
+    <a href="/create">Back to List</a>
 </div>
 
 @code {

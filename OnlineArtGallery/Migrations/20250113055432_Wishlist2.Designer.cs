@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineArtGallery.Data;
 
@@ -11,9 +12,11 @@ using OnlineArtGallery.Data;
 namespace OnlineArtGallery.Migrations
 {
     [DbContext(typeof(OnlineArtGalleryContext))]
-    partial class OnlineArtGalleryContextModelSnapshot : ModelSnapshot
+    [Migration("20250113055432_Wishlist2")]
+    partial class Wishlist2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -267,8 +270,8 @@ namespace OnlineArtGallery.Migrations
                         {
                             Id = 1,
                             CreatedBy = "System",
-                            DateCreated = new DateTime(2025, 1, 13, 15, 6, 20, 581, DateTimeKind.Local).AddTicks(5064),
-                            DateUpdated = new DateTime(2025, 1, 13, 15, 6, 20, 581, DateTimeKind.Local).AddTicks(5085),
+                            DateCreated = new DateTime(2025, 1, 13, 13, 54, 31, 90, DateTimeKind.Local).AddTicks(6673),
+                            DateUpdated = new DateTime(2025, 1, 13, 13, 54, 31, 90, DateTimeKind.Local).AddTicks(6695),
                             Description = "A Description of Artwork",
                             Image = "https://th.bing.com/th/id/OIP.GPFEY6kfgxbsja6gmrW6rwHaE7?w=270&h=180&c=7&r=0&o=5&dpr=1.5&pid=1.7",
                             Name = "Name of Artwork",
@@ -343,26 +346,6 @@ namespace OnlineArtGallery.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Wishlist");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            ArtworkId = 0,
-                            CreatedBy = "System",
-                            DateCreated = new DateTime(2025, 1, 13, 15, 6, 20, 581, DateTimeKind.Local).AddTicks(5619),
-                            DateUpdated = new DateTime(2025, 1, 13, 15, 6, 20, 581, DateTimeKind.Local).AddTicks(5622),
-                            UpdatedBy = "System"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            ArtworkId = 1,
-                            CreatedBy = "System",
-                            DateCreated = new DateTime(2025, 1, 13, 15, 6, 20, 581, DateTimeKind.Local).AddTicks(5625),
-                            DateUpdated = new DateTime(2025, 1, 13, 15, 6, 20, 581, DateTimeKind.Local).AddTicks(5627),
-                            UpdatedBy = "System"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

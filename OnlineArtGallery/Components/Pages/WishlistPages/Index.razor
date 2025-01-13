@@ -1,0 +1,42 @@
+﻿@page "/wishlist"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using OnlineArtGallery.Domain
+@using OnlineArtGallery.Data
+@implements IAsyncDisposable
+@inject IDbContextFactory<OnlineArtGallery.Data.OnlineArtGalleryContext> DbFactory
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="wishlists/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.Wishlist">
+    <PropertyColumn Property="wishlist => wishlist.ArtworkId" />
+    <PropertyColumn Property="wishlist => wishlist.DateCreated" />
+    <PropertyColumn Property="wishlist => wishlist.DateUpdated" />
+    <PropertyColumn Property="wishlist => wishlist.CreatedBy" />
+    <PropertyColumn Property="wishlist => wishlist.UpdatedBy" />
+
+    <TemplateColumn Context="wishlist">
+        <a href="@($"wishlist/edit?id={wishlist.Id}")">Edit</a> |
+        <a href="@($"wishlist/details?id={wishlist.Id}")">Details</a> |
+        <a href="@($"wishlist/delete?id={wishlist.Id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private OnlineArtGalleryContext context = default!;
+
+
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}
