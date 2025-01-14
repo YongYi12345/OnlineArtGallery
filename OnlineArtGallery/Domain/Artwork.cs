@@ -5,6 +5,7 @@ namespace OnlineArtGallery.Domain
 {
     public class Artwork : BaseDomainModel
     {
+        public int UserId { get; set; }
         public string? Name { get; set; }
         public string? Description { get; set; }
         public double Price { get; set; }

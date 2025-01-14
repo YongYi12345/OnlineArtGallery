@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineArtGallery.Data;
 
@@ -11,9 +12,11 @@ using OnlineArtGallery.Data;
 namespace OnlineArtGallery.Migrations
 {
     [DbContext(typeof(OnlineArtGalleryContext))]
-    partial class OnlineArtGalleryContextModelSnapshot : ModelSnapshot
+    [Migration("20250114033631_Artwork1")]
+    partial class Artwork1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -224,26 +227,6 @@ namespace OnlineArtGallery.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "3781efa7-66dc-47f0-860f-e506d04102e4",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "0b08a8d5-2abf-447c-bbe4-c9c714d51405",
-                            Email = "admin@localhost.com",
-                            EmailConfirmed = true,
-                            FirstName = "Admin",
-                            LastName = "User",
-                            LockoutEnabled = false,
-                            NormalizedEmail = "ADMIN@LOCALHOST.COM",
-                            NormalizedUserName = "ADMIN@LOCALHOST.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEI0DGPG0tBHcnr5e+BQPitVBslLG3XKsllwr7ceBShQZ8kAGGr8xO9C8+adIFO24jA==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "9d6ceb84-8d37-420d-bd69-4dff6bfc540e",
-                            TwoFactorEnabled = false,
-                            UserName = "admin@localhost.com"
-                        });
                 });
 
             modelBuilder.Entity("OnlineArtGallery.Domain.Artwork", b =>
@@ -290,8 +273,8 @@ namespace OnlineArtGallery.Migrations
                         {
                             Id = 1,
                             CreatedBy = "System",
-                            DateCreated = new DateTime(2025, 1, 14, 11, 54, 9, 485, DateTimeKind.Local).AddTicks(7113),
-                            DateUpdated = new DateTime(2025, 1, 14, 11, 54, 9, 485, DateTimeKind.Local).AddTicks(7127),
+                            DateCreated = new DateTime(2025, 1, 14, 11, 36, 30, 588, DateTimeKind.Local).AddTicks(8348),
+                            DateUpdated = new DateTime(2025, 1, 14, 11, 36, 30, 588, DateTimeKind.Local).AddTicks(8361),
                             Description = "A Description of Artwork",
                             Image = "https://th.bing.com/th/id/OIP.GPFEY6kfgxbsja6gmrW6rwHaE7?w=270&h=180&c=7&r=0&o=5&dpr=1.5&pid=1.7",
                             Name = "Name of Artwork",
@@ -374,8 +357,8 @@ namespace OnlineArtGallery.Migrations
                             Id = 1,
                             ArtworkId = 0,
                             CreatedBy = "System",
-                            DateCreated = new DateTime(2025, 1, 14, 11, 54, 9, 485, DateTimeKind.Local).AddTicks(7366),
-                            DateUpdated = new DateTime(2025, 1, 14, 11, 54, 9, 485, DateTimeKind.Local).AddTicks(7367),
+                            DateCreated = new DateTime(2025, 1, 14, 11, 36, 30, 588, DateTimeKind.Local).AddTicks(8595),
+                            DateUpdated = new DateTime(2025, 1, 14, 11, 36, 30, 588, DateTimeKind.Local).AddTicks(8596),
                             UpdatedBy = "System"
                         },
                         new
@@ -383,8 +366,8 @@ namespace OnlineArtGallery.Migrations
                             Id = 2,
                             ArtworkId = 1,
                             CreatedBy = "System",
-                            DateCreated = new DateTime(2025, 1, 14, 11, 54, 9, 485, DateTimeKind.Local).AddTicks(7369),
-                            DateUpdated = new DateTime(2025, 1, 14, 11, 54, 9, 485, DateTimeKind.Local).AddTicks(7370),
+                            DateCreated = new DateTime(2025, 1, 14, 11, 36, 30, 588, DateTimeKind.Local).AddTicks(8598),
+                            DateUpdated = new DateTime(2025, 1, 14, 11, 36, 30, 588, DateTimeKind.Local).AddTicks(8598),
                             UpdatedBy = "System"
                         });
                 });

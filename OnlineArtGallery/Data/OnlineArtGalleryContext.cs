@@ -19,6 +19,7 @@ namespace OnlineArtGallery.Data
 
             builder.ApplyConfiguration(new ArtworkSeed());
             builder.ApplyConfiguration(new WishlistSeed());
+            builder.ApplyConfiguration(new UserSeed());
         }
         
     }

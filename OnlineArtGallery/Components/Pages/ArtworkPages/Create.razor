@@ -35,26 +35,6 @@
                 <InputText id="image" @bind-Value="Artwork.Image" class="form-control" /> 
                 <ValidationMessage For="() => Artwork.Image" class="text-danger" /> 
             </div>        
-            <div class="mb-3">
-                <label for="datecreated" class="form-label">DateCreated:</label> 
-                <InputDate id="datecreated" @bind-Value="Artwork.DateCreated" class="form-control" /> 
-                <ValidationMessage For="() => Artwork.DateCreated" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="dateupdated" class="form-label">DateUpdated:</label> 
-                <InputDate id="dateupdated" @bind-Value="Artwork.DateUpdated" class="form-control" /> 
-                <ValidationMessage For="() => Artwork.DateUpdated" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="createdby" class="form-label">CreatedBy:</label> 
-                <InputText id="createdby" @bind-Value="Artwork.CreatedBy" class="form-control" /> 
-                <ValidationMessage For="() => Artwork.CreatedBy" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="updatedby" class="form-label">UpdatedBy:</label> 
-                <InputText id="updatedby" @bind-Value="Artwork.UpdatedBy" class="form-control" /> 
-                <ValidationMessage For="() => Artwork.UpdatedBy" class="text-danger" /> 
-            </div>        
             <button type="submit" class="btn btn-primary">Create</button>
         </EditForm>
     </div>
@@ -68,10 +48,14 @@
     [SupplyParameterFromForm]
     private Artwork Artwork { get; set; } = new();
 
+
     // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
     private async Task AddArtwork()
     {
         using var context = DbFactory.CreateDbContext();
+        Artwork.DateUpdated = DateTime.Now;
+        Artwork.DateCreated = DateTime.Now;
+        Artwork.CreatedBy = context.User.Local.ToString();
         context.Artwork.Add(Artwork);
         await context.SaveChangesAsync();
         NavigationManager.NavigateTo("/create");
