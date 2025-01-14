@@ -1,0 +1,41 @@
+﻿@page "/auctions"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using OnlineArtGallery.Domain
+@using OnlineArtGallery.Data
+@implements IAsyncDisposable
+@inject IDbContextFactory<OnlineArtGallery.Data.OnlineArtGalleryContext> DbFactory
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="auctions/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.Auction">
+    <PropertyColumn Property="auction => auction.StartingBid" />
+    <PropertyColumn Property="auction => auction.Date" />
+    <PropertyColumn Property="auction => auction.DateCreated" />
+    <PropertyColumn Property="auction => auction.DateUpdated" />
+    <PropertyColumn Property="auction => auction.CreatedBy" />
+    <PropertyColumn Property="auction => auction.UpdatedBy" />
+
+    <TemplateColumn Context="auction">
+        <a href="@($"auctions/edit?id={auction.Id}")">Edit</a> |
+        <a href="@($"auctions/details?id={auction.Id}")">Details</a> |
+        <a href="@($"auctions/delete?id={auction.Id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private OnlineArtGalleryContext context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}

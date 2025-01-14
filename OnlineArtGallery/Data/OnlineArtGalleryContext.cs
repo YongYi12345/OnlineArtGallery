@@ -17,6 +17,9 @@ namespace OnlineArtGallery.Data
             base.OnModelCreating(builder);
 
             builder.ApplyConfiguration(new ArtworkSeed());
+            builder.ApplyConfiguration(new AuctionSeed());
         }
+        public DbSet<OnlineArtGallery.Domain.Auction> Auction { get; set; } = default!;
+
     }
 }
