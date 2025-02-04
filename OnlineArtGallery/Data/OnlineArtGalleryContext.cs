@@ -9,7 +9,6 @@ namespace OnlineArtGallery.Data
     public class OnlineArtGalleryContext(DbContextOptions<OnlineArtGalleryContext> options) : IdentityDbContext<OnlineArtGalleryUser>(options)
     {
 
-        public DbSet<OnlineArtGallery.Domain.User> User { get; set; } = default!;
         public DbSet<OnlineArtGallery.Domain.Artwork> Artwork { get; set; } = default!;
         public DbSet<OnlineArtGallery.Domain.Wishlist> Wishlist { get; set; } = default!;
 
