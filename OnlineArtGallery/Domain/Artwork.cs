@@ -1,14 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc.TagHelpers;
-using System.Drawing;
+﻿
+using Microsoft.AspNetCore.Components.Forms;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OnlineArtGallery.Domain
 {
     public class Artwork : BaseDomainModel
     {
-        public int UserId { get; set; }
         public string? Name { get; set; }
         public string? Description { get; set; }
         public double Price { get; set; }
-        public string? Image { get; set; }
+        public string? ImagePath { get; set; }
+        [NotMapped]
+        public IBrowserFile? Image { get; set; }
     }
 }

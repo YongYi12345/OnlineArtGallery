@@ -1,6 +1,14 @@
 ﻿@page "/create/edit"
+
 @using Microsoft.EntityFrameworkCore
 @using OnlineArtGallery.Domain
+@using Microsoft.AspNetCore.Identity
+
+@using OnlineArtGallery.Data
+@using OnlineArtGallery.Components.Account
+
+@inject UserManager<OnlineArtGalleryUser> UserManager
+@inject SignInManager<OnlineArtGalleryUser> SignInManager
 @inject IDbContextFactory<OnlineArtGallery.Data.OnlineArtGalleryContext> DbFactory
 @inject NavigationManager NavigationManager
 
@@ -39,7 +47,7 @@ else
                 </div>
                 <div class="mb-3">
                     <label for="image" class="form-label">Image:</label>
-                    <InputText id="image" @bind-Value="Artwork.Image" class="form-control" />
+                    <InputText id="image" @bind-Value="Artwork.ImagePath" class="form-control" />
                     <ValidationMessage For="() => Artwork.Image" class="text-danger" />
                 </div>
                 <button type="submit" class="btn btn-primary">Save</button>
@@ -59,6 +67,9 @@ else
     [SupplyParameterFromForm]
     private Artwork? Artwork { get; set; }
 
+    private OnlineArtGalleryUser user = default!;
+    private string? username;
+
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
@@ -68,20 +79,36 @@ else
         {
             NavigationManager.NavigateTo("notfound");
         }
+
+        var claimsPrincipal = SignInManager.Context.User;
+        if (claimsPrincipal != null)
+        {
+            // Use UserManager to get the OnlineArtGalleryUser object
+            user = await UserManager.GetUserAsync(claimsPrincipal);
+            username = user?.UserName ?? "Unknown"; //Fallback if the username is not found
+        }
+        else
+        {
+            username = "Unknown";
+        }
     }
 
     // To protect from overposting attacks, enable the specific properties you want to bind to.
     // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
     private async Task UpdateArtwork()
     {
-
         using var context = DbFactory.CreateDbContext();
-
         Artwork.DateUpdated = DateTime.Now;
-        //Artwork.CreatedBy = @context.User.Identity?.Name
-
-        ;
-        context.Attach(Artwork!).State = EntityState.Modified;
+        Artwork.UpdatedBy = username;
+        context.Attach(Artwork!);
+        context.Entry(Artwork).Property(a => a.Name).IsModified = true;
+        context.Entry(Artwork).Property(a => a.Description).IsModified = true;
+        context.Entry(Artwork).Property(a => a.Price).IsModified = true;
+        context.Entry(Artwork).Property(a => a.ImagePath).IsModified = true;
+        context.Entry(Artwork).Property(a => a.DateUpdated).IsModified = true;
+        context.Entry(Artwork).Property(a => a.UpdatedBy).IsModified = true;
+        context.Entry(Artwork).Property(a => a.CreatedBy).IsModified = false;
+        context.Entry(Artwork).Property(a => a.DateCreated).IsModified = false;
 
         try
         {

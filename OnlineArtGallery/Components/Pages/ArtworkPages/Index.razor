@@ -2,24 +2,30 @@
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using OnlineArtGallery.Configurations.Entities
+@using Microsoft.AspNetCore.Identity
+
 @using OnlineArtGallery.Domain
 @using OnlineArtGallery.Data
+@using OnlineArtGallery.Components.Account
+
+@inject UserManager<OnlineArtGalleryUser> UserManager
+@inject SignInManager<OnlineArtGalleryUser> SignInManager
 @implements IAsyncDisposable
 @inject IDbContextFactory<OnlineArtGallery.Data.OnlineArtGalleryContext> DbFactory
 
 <PageTitle>Index</PageTitle>
 
-<h1>List of ccreated artworks</h1>
+<h1>List of created artworks</h1>
 
 <p>
     <a href="create/create">Create New</a>
 </p>
 
 
-<QuickGrid Class="table" Items="context.Artwork">
+<QuickGrid Class="table" Items="filteredArtwork">
 
     <TemplateColumn Context="artwork">
-        <img src="@artwork.Image" id="image" height="150px" width="150px" />
+        <img src="@artwork.ImagePath" id="image" height="150px" width="150px" />
     </TemplateColumn>
 
     <PropertyColumn Property="artwork => artwork.Name"/>
@@ -39,12 +45,42 @@
 
 @code {
 
+    // private OnlineArtGalleryContext context = default!;
+    // protected override void OnInitialized()
+    // {
+    //     context = DbFactory.CreateDbContext();
+    // }
+
+    // public async ValueTask DisposeAsync() => await context.DisposeAsync();
+    private OnlineArtGalleryUser user = default!;
+    private string? username;
+
     private OnlineArtGalleryContext context = default!;
-    protected override void OnInitialized()
+    private IQueryable<Artwork> filteredArtwork = Enumerable.Empty<Artwork>().AsQueryable(); // Initialize empty
+
+    // [SupplyParameterFromQuery]
+    // public int UserId { get; set; }
+
+    protected override async Task OnInitializedAsync()
     {
+        var claimsPrincipal = SignInManager.Context.User;
+        if (claimsPrincipal != null)
+        {
+            user = await UserManager.GetUserAsync(claimsPrincipal);
+            username = user?.UserName ?? "Unknown";
+        }
+        else
+        {
+            username = "Unknown";
+        }
+
         context = DbFactory.CreateDbContext();
+
+        filteredArtwork = context.Artwork.Where(artwork => artwork.CreatedBy == username);
+
+        await base.OnInitializedAsync();
     }
 
     public async ValueTask DisposeAsync() => await context.DisposeAsync();
-    
+
 }

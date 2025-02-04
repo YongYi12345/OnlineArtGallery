@@ -1,8 +1,25 @@
 ﻿@page "/create/create"
+@using Microsoft.AspNetCore.Mvc
 @using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Identity
+
 @using OnlineArtGallery.Domain
+@using OnlineArtGallery.Data
+@using OnlineArtGallery.Components.Account
+
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Hosting
+@using System.IO
+
+@inject UserManager<OnlineArtGalleryUser> UserManager
+@inject SignInManager<OnlineArtGalleryUser> SignInManager
+
 @inject IDbContextFactory<OnlineArtGallery.Data.OnlineArtGalleryContext> DbFactory
 @inject NavigationManager NavigationManager
+
+@inject IWebHostEnvironment HostingEnvironment
+@inject IWebHostEnvironment WebHostEnvironment
+
 
 <PageTitle>Create</PageTitle>
 
@@ -15,26 +32,35 @@
         <EditForm method="post" Model="Artwork" OnValidSubmit="AddArtwork" FormName="create" Enhance>
             <DataAnnotationsValidator />
             <ValidationSummary class="text-danger" role="alert"/>
+
             <div class="mb-3">
                 <label for="name" class="form-label">Name:</label> 
                 <InputText id="name" @bind-Value="Artwork.Name" class="form-control" /> 
                 <ValidationMessage For="() => Artwork.Name" class="text-danger" /> 
-            </div>        
+            </div>    
             <div class="mb-3">
                 <label for="description" class="form-label">Description:</label> 
                 <InputText id="description" @bind-Value="Artwork.Description" class="form-control" /> 
                 <ValidationMessage For="() => Artwork.Description" class="text-danger" /> 
-            </div>        
+            </div>
             <div class="mb-3">
                 <label for="price" class="form-label">Price:</label> 
                 <InputNumber id="price" @bind-Value="Artwork.Price" class="form-control" /> 
                 <ValidationMessage For="() => Artwork.Price" class="text-danger" /> 
             </div>        
+            
             <div class="mb-3">
                 <label for="image" class="form-label">Image:</label> 
-                <InputText id="image" @bind-Value="Artwork.Image" class="form-control" /> 
-                <ValidationMessage For="() => Artwork.Image" class="text-danger" /> 
-            </div>        
+                <InputText id="image" @bind-Value="Artwork.ImagePath" class="form-control" /> 
+                <ValidationMessage For="() => Artwork.ImagePath" class="text-danger" /> 
+            </div>
+            @*
+             <div class="mb-3">
+                 <label for="image" class="form-label">Image:</label>
+                 <InputFile id="image" OnChange="OnImageUpload" class="form-control" />
+                 <ValidationMessage For="() => Artwork.Image" class="text-danger" />
+             </div>
+             *@
             <button type="submit" class="btn btn-primary">Create</button>
         </EditForm>
     </div>
@@ -45,18 +71,95 @@
 </div>
 
 @code {
+    private OnlineArtGalleryUser user = default!;
+    private string? username;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var claimsPrincipal = SignInManager.Context.User;
+        if (claimsPrincipal != null)
+        {
+            // Use UserManager to get the OnlineArtGalleryUser object
+            user = await UserManager.GetUserAsync(claimsPrincipal);
+            username = user?.UserName ?? "Unknown"; //Fallback if the username is not found
+        }
+        else
+        {
+            username = "Unknown";
+        }
+    }
     [SupplyParameterFromForm]
     private Artwork Artwork { get; set; } = new();
+
+    private string? discription;
 
     // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
     private async Task AddArtwork()
     {
+        // if (Artwork.Image != null)
+        // {
+        //     Save the image to the server and store the path
+        //     var folderPath = Path.Combine(WebHostEnvironment.WebRootPath, "images");
+
+        //     discription = $"Saving to folder: {folderPath}";
+
+        //     if (!Directory.Exists(folderPath))
+        //     {
+        //         discription = "Folder does not exist. Creating folder...";
+        //         Directory.CreateDirectory(folderPath);
+        //     }
+
+        //     var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(Artwork.Image.Name);
+
+        //     var filePath = Path.Combine(folderPath, uniqueFileName);
+        //     discription = $"File path: {filePath}";
+
+            // using (var fileStream = new FileStream(filePath, FileMode.Create))
+            // {
+            //     Copy the uploaded file to the server directory
+            //     await Artwork.Image.OpenReadStream().CopyToAsync(fileStream);
+            // }
+
+            // Store the relative image path in the database
+            // Artwork.ImagePath = $"/images/{uniqueFileName}";
+
+        //     try
+        //     {
+        //         using (var fileStream = new FileStream(filePath, FileMode.Create))
+        //         {
+        //             await Artwork.Image.OpenReadStream().CopyToAsync(fileStream);
+        //             discription = "Image saved successfully.";
+        //         }
+        //         Artwork.ImagePath = $"/images/{uniqueFileName}";
+        //         discription = $"ImagePath set to: {Artwork.ImagePath}";
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         discription = $"Error saving image: {ex.Message}";
+        //     }
+        // }
+        // else
+        // {
+        //     discription = "Artwork.Image == null";
+        // }
         using var context = DbFactory.CreateDbContext();
         Artwork.DateUpdated = DateTime.Now;
         Artwork.DateCreated = DateTime.Now;
-        Artwork.CreatedBy = context.User.Local.ToString();
+        Artwork.CreatedBy = username;
+        Artwork.UpdatedBy = username;
         context.Artwork.Add(Artwork);
         await context.SaveChangesAsync();
         NavigationManager.NavigateTo("/create");
     }
+    // private async Task OnImageUpload(InputFileChangeEventArgs e)
+    // {
+    //     discription = "Testing";
+    //     var file = e.File;
+    //     if (file != null)
+    //     {
+    //         discription = "Nope";
+    //         Artwork.Image = file;
+    //     }
+    // }
 }

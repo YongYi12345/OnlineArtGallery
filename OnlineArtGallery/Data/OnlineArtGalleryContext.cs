@@ -16,10 +16,11 @@ namespace OnlineArtGallery.Data
         {
             base.OnModelCreating(builder);
 
-            builder.ApplyConfiguration(new ArtworkSeed());
             builder.ApplyConfiguration(new WishlistSeed());
             builder.ApplyConfiguration(new UserSeed());
         }
+        public DbSet<OnlineArtGallery.Domain.Discussion> Discussion { get; set; } = default!;
+        public DbSet<OnlineArtGallery.Domain.Comment> Comment { get; set; } = default!;
         
     }
 }

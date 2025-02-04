@@ -1,0 +1,61 @@
+﻿@page "/discussion/details"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using OnlineArtGallery.Data
+
+@using OnlineArtGallery.Domain
+@inject IDbContextFactory<OnlineArtGallery.Data.OnlineArtGalleryContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>Discussion</h2>
+    <hr />
+    @if (discussion is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">Title</dt>
+            <dd class="col-sm-10">@discussion.Title</dd>
+            <dt class="col-sm-2">Text</dt>
+            <dd class="col-sm-10">@discussion.Text</dd>
+            <dt class="col-sm-2">DateCreated</dt>
+            <dd class="col-sm-10">@discussion.DateCreated</dd>
+            <dt class="col-sm-2">DateUpdated</dt>
+            <dd class="col-sm-10">@discussion.DateUpdated</dd>
+            <dt class="col-sm-2">CreatedBy</dt>
+            <dd class="col-sm-10">@discussion.CreatedBy</dd>
+            <dt class="col-sm-2">UpdatedBy</dt>
+            <dd class="col-sm-10">@discussion.UpdatedBy</dd>
+        </dl>
+        <div>
+            <a href="@($"/discussion/edit?id={discussion.Id}")">Edit</a> |
+            <a href="@($"/discussion")">Back to List</a> |
+            <a href="@($"/comments?discussionid={discussion.Id}")">Show Comments</a> |
+            <a href="@($"/comments/create?discussionid={discussion.Id}")">Add Comments</a>
+        </div>
+    }
+</div>
+
+@code {
+    private Discussion? discussion;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        discussion = await context.Discussion.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (discussion is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}
