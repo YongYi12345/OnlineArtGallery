@@ -1,0 +1,50 @@
+﻿@page "/comments"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using OnlineArtGallery.Domain
+@using OnlineArtGallery.Data
+@implements IAsyncDisposable
+@inject IDbContextFactory<OnlineArtGallery.Data.OnlineArtGalleryContext> DbFactory
+
+<PageTitle>Comments</PageTitle>
+
+<h1>Index</h1>
+
+
+<QuickGrid Class="table" Items="filteredComments">
+    <PropertyColumn Property="comment => comment.Text" />
+    <PropertyColumn Property="comment => comment.DateCreated" />
+    <PropertyColumn Property="comment => comment.DateUpdated" />
+    <PropertyColumn Property="comment => comment.CreatedBy" />
+    <PropertyColumn Property="comment => comment.UpdatedBy" />
+
+    <TemplateColumn Context="comment">
+        <a href="@($"comments/edit?id={comment.Id}")">Edit</a> |
+        <a href="@($"comments/details?id={comment.Id}")">Details</a> |
+        <a href="@($"comments/delete?id={comment.Id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+<div>
+    <a href="@($"/discussion/details?id={DiscussionId}")">Back to List</a>
+</div>
+
+@code {
+    private OnlineArtGalleryContext context = default!;
+    private IQueryable<Comment> filteredComments = Enumerable.Empty<Comment>().AsQueryable(); // Initialize empty
+
+    [SupplyParameterFromQuery]
+    public int DiscussionId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        context = DbFactory.CreateDbContext();
+
+        // Fetch only the comments where DiscussionId equals the one passed in the query string
+        filteredComments = context.Comment.Where(comment => comment.DiscussionId == DiscussionId);
+
+        await base.OnInitializedAsync();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineArtGallery.Data;
 
@@ -11,9 +12,11 @@ using OnlineArtGallery.Data;
 namespace OnlineArtGallery.Migrations
 {
     [DbContext(typeof(OnlineArtGalleryContext))]
-    partial class OnlineArtGalleryContextModelSnapshot : ModelSnapshot
+    [Migration("20250113054849_Initial3")]
+    partial class Initial3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -224,25 +227,6 @@ namespace OnlineArtGallery.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "3781efa7-66dc-47f0-860f-e506d04102e4",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "da5bd5d7-112b-430b-bf1d-81780fa684db",
-                            Email = "admin@localhost.com",
-                            EmailConfirmed = true,
-                            FirstName = "Admin",
-                            LastName = "User",
-                            LockoutEnabled = false,
-                            NormalizedEmail = "ADMIN@LOCALHOST.COM",
-                            NormalizedUserName = "ADMIN@LOCALHOST.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHi6i24mTTu80JqMD/yclhKaJQ93ZsluveV2nDxu1gGZJebLwH0hBsj5MSL9h1ixKg==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "1e0bd8d4-24b0-49ca-89a9-d38e0585b44c",
-                            TwoFactorEnabled = false
-                        });
                 });
 
             modelBuilder.Entity("OnlineArtGallery.Domain.Artwork", b =>
@@ -265,7 +249,12 @@ namespace OnlineArtGallery.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ImagePath")
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
+
+                    b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -277,90 +266,25 @@ namespace OnlineArtGallery.Migrations
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.ToTable("Artwork");
+
+                    b.HasDiscriminator().HasValue("Artwork");
+
+                    b.UseTphMappingStrategy();
 
                     b.HasData(
                         new
                         {
                             Id = 1,
                             CreatedBy = "System",
-                            DateCreated = new DateTime(2025, 1, 14, 12, 56, 24, 556, DateTimeKind.Local).AddTicks(4250),
-                            DateUpdated = new DateTime(2025, 1, 14, 12, 56, 24, 556, DateTimeKind.Local).AddTicks(4263),
-                            Description = "A Monkey",
-                            Image = "idkhowtoshowimage",
-                            Name = "Monkey",
-                            Price = 0.01,
-                            UpdatedBy = "System"
-                        });
-                });
-
-            modelBuilder.Entity("OnlineArtGallery.Domain.Auction", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Date")
-                        .HasColumnType("float");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DateUpdated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<double>("Description")
-                        .HasColumnType("float");
-
-                    b.Property<int>("HighestBid")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("StartingBid")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Auction");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 888,
-                            CreatedBy = "System",
-                            Date = 0.0,
-                            DateCreated = new DateTime(2025, 1, 14, 12, 56, 24, 556, DateTimeKind.Local).AddTicks(4507),
-                            DateUpdated = new DateTime(2025, 1, 14, 12, 56, 24, 556, DateTimeKind.Local).AddTicks(4508),
-                            Description = 0.0,
-                            HighestBid = 0,
-                            StartingBid = 1,
-                            UpdatedBy = "System"
-                        },
-                        new
-                        {
-                            Id = 999,
-                            CreatedBy = "System",
-                            Date = 0.0,
-                            DateCreated = new DateTime(2025, 1, 14, 12, 56, 24, 556, DateTimeKind.Local).AddTicks(4510),
-                            DateUpdated = new DateTime(2025, 1, 14, 12, 56, 24, 556, DateTimeKind.Local).AddTicks(4511),
-                            Description = 0.0,
-                            HighestBid = 0,
-                            StartingBid = 2,
+                            DateCreated = new DateTime(2025, 1, 13, 13, 48, 47, 665, DateTimeKind.Local).AddTicks(8436),
+                            DateUpdated = new DateTime(2025, 1, 13, 13, 48, 47, 665, DateTimeKind.Local).AddTicks(8452),
+                            Description = "A Description of Artwork",
+                            Image = "https://th.bing.com/th/id/OIP.GPFEY6kfgxbsja6gmrW6rwHaE7?w=270&h=180&c=7&r=0&o=5&dpr=1.5&pid=1.7",
+                            Name = "Name of Artwork",
+                            Price = 0.0,
                             UpdatedBy = "System"
                         });
                 });
@@ -373,36 +297,11 @@ namespace OnlineArtGallery.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CreatedBy")
+                    b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DateUpdated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("DiscussionId")
+                    b.Property<int>("Contact")
                         .HasColumnType("int");
-
-                    b.Property<string>("Text")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Comment");
-                });
-
-            modelBuilder.Entity("OnlineArtGallery.Domain.Discussion", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -413,10 +312,13 @@ namespace OnlineArtGallery.Migrations
                     b.Property<DateTime>("DateUpdated")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Text")
+                    b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Title")
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Role")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UpdatedBy")
@@ -424,55 +326,17 @@ namespace OnlineArtGallery.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Discussion");
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("OnlineArtGallery.Domain.Wishlist", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.HasBaseType("OnlineArtGallery.Domain.Artwork");
+
+                    b.Property<int>("number")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ArtworkId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DateUpdated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Wishlist");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            ArtworkId = 0,
-                            CreatedBy = "System",
-                            DateCreated = new DateTime(2025, 2, 3, 3, 13, 41, 828, DateTimeKind.Local).AddTicks(2443),
-                            DateUpdated = new DateTime(2025, 2, 3, 3, 13, 41, 828, DateTimeKind.Local).AddTicks(2457),
-                            UpdatedBy = "System"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            ArtworkId = 1,
-                            CreatedBy = "System",
-                            DateCreated = new DateTime(2025, 2, 3, 3, 13, 41, 828, DateTimeKind.Local).AddTicks(2460),
-                            DateUpdated = new DateTime(2025, 2, 3, 3, 13, 41, 828, DateTimeKind.Local).AddTicks(2460),
-                            UpdatedBy = "System"
-                        });
+                    b.HasDiscriminator().HasValue("Wishlist");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

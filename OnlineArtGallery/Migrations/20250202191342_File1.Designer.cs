@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineArtGallery.Data;
 
@@ -11,9 +12,11 @@ using OnlineArtGallery.Data;
 namespace OnlineArtGallery.Migrations
 {
     [DbContext(typeof(OnlineArtGalleryContext))]
-    partial class OnlineArtGalleryContextModelSnapshot : ModelSnapshot
+    [Migration("20250202191342_File1")]
+    partial class File1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -283,89 +286,9 @@ namespace OnlineArtGallery.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Artwork");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedBy = "System",
-                            DateCreated = new DateTime(2025, 1, 14, 12, 56, 24, 556, DateTimeKind.Local).AddTicks(4250),
-                            DateUpdated = new DateTime(2025, 1, 14, 12, 56, 24, 556, DateTimeKind.Local).AddTicks(4263),
-                            Description = "A Monkey",
-                            Image = "idkhowtoshowimage",
-                            Name = "Monkey",
-                            Price = 0.01,
-                            UpdatedBy = "System"
-                        });
                 });
 
-            modelBuilder.Entity("OnlineArtGallery.Domain.Auction", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Date")
-                        .HasColumnType("float");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DateUpdated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<double>("Description")
-                        .HasColumnType("float");
-
-                    b.Property<int>("HighestBid")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("StartingBid")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Auction");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 888,
-                            CreatedBy = "System",
-                            Date = 0.0,
-                            DateCreated = new DateTime(2025, 1, 14, 12, 56, 24, 556, DateTimeKind.Local).AddTicks(4507),
-                            DateUpdated = new DateTime(2025, 1, 14, 12, 56, 24, 556, DateTimeKind.Local).AddTicks(4508),
-                            Description = 0.0,
-                            HighestBid = 0,
-                            StartingBid = 1,
-                            UpdatedBy = "System"
-                        },
-                        new
-                        {
-                            Id = 999,
-                            CreatedBy = "System",
-                            Date = 0.0,
-                            DateCreated = new DateTime(2025, 1, 14, 12, 56, 24, 556, DateTimeKind.Local).AddTicks(4510),
-                            DateUpdated = new DateTime(2025, 1, 14, 12, 56, 24, 556, DateTimeKind.Local).AddTicks(4511),
-                            Description = 0.0,
-                            HighestBid = 0,
-                            StartingBid = 2,
-                            UpdatedBy = "System"
-                        });
-                });
-
-            modelBuilder.Entity("OnlineArtGallery.Domain.User", b =>
+            modelBuilder.Entity("OnlineArtGallery.Domain.Comment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

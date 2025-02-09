@@ -1,0 +1,76 @@
+﻿@page "/discussion/create"
+@using Microsoft.EntityFrameworkCore
+@using OnlineArtGallery.Domain
+@using Microsoft.AspNetCore.Identity
+@using OnlineArtGallery.Data
+@using OnlineArtGallery.Components.Account
+@inject UserManager<OnlineArtGalleryUser> UserManager
+@inject SignInManager<OnlineArtGalleryUser> SignInManager
+@inject IDbContextFactory<OnlineArtGallery.Data.OnlineArtGalleryContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create new Topic</h1>
+
+<h2>Discussion</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="Discussion" OnValidSubmit="AddDiscussion" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <div class="mb-3">
+                <label for="title" class="form-label">Title:</label>
+                <InputText id="title" @bind-Value="Discussion.Title" class="form-control" />
+                <ValidationMessage For="() => Discussion.Title" class="title-danger" />
+            </div>            
+            <div class="mb-3">
+                <label for="text" class="form-label">Text:</label>
+                <InputText id="text" @bind-Value="Discussion.Text" class="form-control" />
+                <ValidationMessage For="() => Discussion.Text" class="text-danger" />
+            </div>   
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/discussion">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private Discussion Discussion { get; set; } = new();
+
+    private OnlineArtGalleryUser user = default!;
+    private string? username;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var claimsPrincipal = SignInManager.Context.User;
+        if (claimsPrincipal != null)
+        {
+            // Use UserManager to get the OnlineArtGalleryUser object
+            user = await UserManager.GetUserAsync(claimsPrincipal);
+            username = user?.UserName ?? "Unknown"; //Fallback if the username is not found
+        }
+        else
+        {
+            username = "Unknown";
+        }
+    }
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddDiscussion()
+    {
+        using var context = DbFactory.CreateDbContext();
+        Discussion.DateUpdated = DateTime.Now;
+        Discussion.DateCreated = DateTime.Now;
+        Discussion.CreatedBy = username;
+        Discussion.UpdatedBy = username;
+        context.Discussion.Add(Discussion);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/discussion");
+    }
+}

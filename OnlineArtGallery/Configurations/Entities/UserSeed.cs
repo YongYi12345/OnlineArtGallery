@@ -16,7 +16,7 @@ namespace OnlineArtGallery.Configurations.Entities
                 NormalizedEmail = "ADMIN@LOCALHOST.COM",
                 FirstName = "Admin",
                 LastName = "User",
-                UserName = "admin@localhost.com",
+                //UserName = "Admin1",
                 NormalizedUserName = "ADMIN@LOCALHOST.COM",
                 PasswordHash = hasher.HashPassword(null, "P@ssword1"),
                 EmailConfirmed = true // Set to true, otherwise you won't be able to login

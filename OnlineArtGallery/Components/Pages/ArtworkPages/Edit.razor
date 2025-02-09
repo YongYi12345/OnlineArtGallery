@@ -1,6 +1,14 @@
 ﻿@page "/create/edit"
+
 @using Microsoft.EntityFrameworkCore
 @using OnlineArtGallery.Domain
+@using Microsoft.AspNetCore.Identity
+
+@using OnlineArtGallery.Data
+@using OnlineArtGallery.Components.Account
+
+@inject UserManager<OnlineArtGalleryUser> UserManager
+@inject SignInManager<OnlineArtGalleryUser> SignInManager
 @inject IDbContextFactory<OnlineArtGallery.Data.OnlineArtGalleryContext> DbFactory
 @inject NavigationManager NavigationManager
 
@@ -34,33 +42,13 @@ else
                 </div>
                 <div class="mb-3">
                     <label for="price" class="form-label">Price:</label>
-                    <InputNumber id="price" @bind-Value="Artwork.Price" class="form-control" />
+                    <InputNumber id="price" @bind-Value="Artwork.Price" class="form-control"/>
                     <ValidationMessage For="() => Artwork.Price" class="text-danger" />
                 </div>
                 <div class="mb-3">
                     <label for="image" class="form-label">Image:</label>
-                    <InputText id="image" @bind-Value="Artwork.Image" class="form-control" />
+                    <InputText id="image" @bind-Value="Artwork.ImagePath" class="form-control" />
                     <ValidationMessage For="() => Artwork.Image" class="text-danger" />
-                </div>
-                <div class="mb-3">
-                    <label for="datecreated" class="form-label">DateCreated:</label>
-                    <InputDate id="datecreated" @bind-Value="Artwork.DateCreated" class="form-control" />
-                    <ValidationMessage For="() => Artwork.DateCreated" class="text-danger" />
-                </div>
-                <div class="mb-3">
-                    <label for="dateupdated" class="form-label">DateUpdated:</label>
-                    <InputDate id="dateupdated" @bind-Value="Artwork.DateUpdated" class="form-control" />
-                    <ValidationMessage For="() => Artwork.DateUpdated" class="text-danger" />
-                </div>
-                <div class="mb-3">
-                    <label for="createdby" class="form-label">CreatedBy:</label>
-                    <InputText id="createdby" @bind-Value="Artwork.CreatedBy" class="form-control" />
-                    <ValidationMessage For="() => Artwork.CreatedBy" class="text-danger" />
-                </div>
-                <div class="mb-3">
-                    <label for="updatedby" class="form-label">UpdatedBy:</label>
-                    <InputText id="updatedby" @bind-Value="Artwork.UpdatedBy" class="form-control" />
-                    <ValidationMessage For="() => Artwork.UpdatedBy" class="text-danger" />
                 </div>
                 <button type="submit" class="btn btn-primary">Save</button>
             </EditForm>
@@ -69,7 +57,7 @@ else
 }
 
 <div>
-    <a href="/artworks">Back to List</a>
+    <a href="/create">Back to List</a>
 </div>
 
 @code {
@@ -78,6 +66,9 @@ else
 
     [SupplyParameterFromForm]
     private Artwork? Artwork { get; set; }
+
+    private OnlineArtGalleryUser user = default!;
+    private string? username;
 
     protected override async Task OnInitializedAsync()
     {
@@ -88,6 +79,18 @@ else
         {
             NavigationManager.NavigateTo("notfound");
         }
+
+        var claimsPrincipal = SignInManager.Context.User;
+        if (claimsPrincipal != null)
+        {
+            // Use UserManager to get the OnlineArtGalleryUser object
+            user = await UserManager.GetUserAsync(claimsPrincipal);
+            username = user?.UserName ?? "Unknown"; //Fallback if the username is not found
+        }
+        else
+        {
+            username = "Unknown";
+        }
     }
 
     // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -95,7 +98,17 @@ else
     private async Task UpdateArtwork()
     {
         using var context = DbFactory.CreateDbContext();
-        context.Attach(Artwork!).State = EntityState.Modified;
+        Artwork.DateUpdated = DateTime.Now;
+        Artwork.UpdatedBy = username;
+        context.Attach(Artwork!);
+        context.Entry(Artwork).Property(a => a.Name).IsModified = true;
+        context.Entry(Artwork).Property(a => a.Description).IsModified = true;
+        context.Entry(Artwork).Property(a => a.Price).IsModified = true;
+        context.Entry(Artwork).Property(a => a.ImagePath).IsModified = true;
+        context.Entry(Artwork).Property(a => a.DateUpdated).IsModified = true;
+        context.Entry(Artwork).Property(a => a.UpdatedBy).IsModified = true;
+        context.Entry(Artwork).Property(a => a.CreatedBy).IsModified = false;
+        context.Entry(Artwork).Property(a => a.DateCreated).IsModified = false;
 
         try
         {

@@ -1,0 +1,56 @@
+﻿@page "/comments/details"
+@using Microsoft.EntityFrameworkCore
+@using OnlineArtGallery.Domain
+@inject IDbContextFactory<OnlineArtGallery.Data.OnlineArtGalleryContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Comment Details</h1>
+
+<div>
+    <h2>Comment</h2>
+    <hr />
+    @if (comment is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">DiscussionId</dt>
+            <dd class="col-sm-10">@comment.DiscussionId</dd>
+            <dt class="col-sm-2">Text</dt>
+            <dd class="col-sm-10">@comment.Text</dd>
+            <dt class="col-sm-2">DateCreated</dt>
+            <dd class="col-sm-10">@comment.DateCreated</dd>
+            <dt class="col-sm-2">DateUpdated</dt>
+            <dd class="col-sm-10">@comment.DateUpdated</dd>
+            <dt class="col-sm-2">CreatedBy</dt>
+            <dd class="col-sm-10">@comment.CreatedBy</dd>
+            <dt class="col-sm-2">UpdatedBy</dt>
+            <dd class="col-sm-10">@comment.UpdatedBy</dd>
+        </dl>
+        <div>
+            <a href="@($"/comments/edit?id={comment.Id}")">Edit</a> |
+            <a href="@($"/comments?discussionid={comment.DiscussionId}")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private Comment? comment;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        comment = await context.Comment.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (comment is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

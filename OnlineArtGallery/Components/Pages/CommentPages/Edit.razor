@@ -1,0 +1,120 @@
+﻿@page "/comments/edit"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Identity
+
+@using OnlineArtGallery.Domain
+@using OnlineArtGallery.Data
+@using OnlineArtGallery.Components.Account
+
+@inject UserManager<OnlineArtGalleryUser> UserManager
+@inject SignInManager<OnlineArtGalleryUser> SignInManager
+
+@inject IDbContextFactory<OnlineArtGallery.Data.OnlineArtGalleryContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit Comments</h1>
+
+<h2>Comment</h2>
+<hr />
+@if (Comment is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="Comment" OnValidSubmit="UpdateComment" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert"/>
+                <input type="hidden" name="Comment.Id" value="@Comment.Id" />
+                <input type="hidden" name="Comment.DiscussionId" value="@Comment.DiscussionId" />
+                <div class="mb-3">
+                    <label for="text" class="form-label">Text:</label>
+                    <InputText id="text" @bind-Value="Comment.Text" class="form-control" />
+                    <ValidationMessage For="() => Comment.Text" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="@($"/discussion")">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    private Comment? Comment { get; set; }
+
+    private OnlineArtGalleryUser user = default!;
+    private string? username;
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        Comment ??= await context.Comment.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (Comment is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+
+        var claimsPrincipal = SignInManager.Context.User;
+        if (claimsPrincipal != null)
+        {
+            // Use UserManager to get the OnlineArtGalleryUser object
+            user = await UserManager.GetUserAsync(claimsPrincipal);
+            username = user?.UserName ?? "Unknown"; //Fallback if the username is not found
+        }
+        else
+        {
+            username = "Unknown";
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task UpdateComment()
+    {
+        using var context = DbFactory.CreateDbContext();
+        Comment.DateUpdated = DateTime.Now;
+        Comment.UpdatedBy = username;
+        context.Attach(Comment!);
+        context.Entry(Comment).Property(a => a.Text).IsModified = true;
+        context.Entry(Comment).Property(a => a.DateUpdated).IsModified = true;
+        context.Entry(Comment).Property(a => a.UpdatedBy).IsModified = true;
+        context.Entry(Comment).Property(a => a.CreatedBy).IsModified = false;
+        context.Entry(Comment).Property(a => a.DateCreated).IsModified = false;
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!CommentExists(Comment!.Id))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/discussion");
+    }
+
+    private bool CommentExists(int id)
+    {
+        using var context = DbFactory.CreateDbContext();
+        return context.Comment.Any(e => e.Id == id);
+    }
+}
