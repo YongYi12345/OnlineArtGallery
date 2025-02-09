@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineArtGallery.Data;
 
@@ -11,9 +12,11 @@ using OnlineArtGallery.Data;
 namespace OnlineArtGallery.Migrations
 {
     [DbContext(typeof(OnlineArtGalleryContext))]
-    partial class OnlineArtGalleryContextModelSnapshot : ModelSnapshot
+    [Migration("20250208105321_Profile1")]
+    partial class Profile1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -174,6 +177,12 @@ namespace OnlineArtGallery.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -224,15 +233,17 @@ namespace OnlineArtGallery.Migrations
                         {
                             Id = "3781efa7-66dc-47f0-860f-e506d04102e4",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a52268d9-3771-44f0-821c-a0c035960ac6",
+                            ConcurrencyStamp = "a0d6afc6-5411-4806-82e2-9b15156cede0",
                             Email = "admin@localhost.com",
                             EmailConfirmed = true,
+                            FirstName = "Admin",
+                            LastName = "User",
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@LOCALHOST.COM",
                             NormalizedUserName = "ADMIN@LOCALHOST.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEIFRjk//Cqi8NRcxWnDnaaimqwp0Z5Ex89TEjJ8DK7jHrFnTlKGZQGoakCZp3LUiNg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEHdQinl5D3s42pOnNdVFGvFCvTzRAJHTNn/SGUljhFYOrm+4XyYBS+UOj29DyTyarQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "cb277ea1-e9ee-4580-bb1b-fd7f61524095",
+                            SecurityStamp = "4b762501-9f6e-449e-93c1-b8cf2453debd",
                             TwoFactorEnabled = false
                         });
                 });
@@ -266,9 +277,6 @@ namespace OnlineArtGallery.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.Property<int>("ProfileId")
-                        .HasColumnType("int");
-
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -295,9 +303,6 @@ namespace OnlineArtGallery.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("DiscussionId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProfileId")
                         .HasColumnType("int");
 
                     b.Property<string>("Text")
@@ -409,8 +414,8 @@ namespace OnlineArtGallery.Migrations
                             Id = 1,
                             ArtworkId = 0,
                             CreatedBy = "System",
-                            DateCreated = new DateTime(2025, 2, 9, 20, 4, 42, 761, DateTimeKind.Local).AddTicks(4674),
-                            DateUpdated = new DateTime(2025, 2, 9, 20, 4, 42, 761, DateTimeKind.Local).AddTicks(4687),
+                            DateCreated = new DateTime(2025, 2, 8, 18, 53, 21, 157, DateTimeKind.Local).AddTicks(7909),
+                            DateUpdated = new DateTime(2025, 2, 8, 18, 53, 21, 157, DateTimeKind.Local).AddTicks(7923),
                             UpdatedBy = "System"
                         },
                         new
@@ -418,8 +423,8 @@ namespace OnlineArtGallery.Migrations
                             Id = 2,
                             ArtworkId = 1,
                             CreatedBy = "System",
-                            DateCreated = new DateTime(2025, 2, 9, 20, 4, 42, 761, DateTimeKind.Local).AddTicks(4689),
-                            DateUpdated = new DateTime(2025, 2, 9, 20, 4, 42, 761, DateTimeKind.Local).AddTicks(4690),
+                            DateCreated = new DateTime(2025, 2, 8, 18, 53, 21, 157, DateTimeKind.Local).AddTicks(7926),
+                            DateUpdated = new DateTime(2025, 2, 8, 18, 53, 21, 157, DateTimeKind.Local).AddTicks(7926),
                             UpdatedBy = "System"
                         });
                 });

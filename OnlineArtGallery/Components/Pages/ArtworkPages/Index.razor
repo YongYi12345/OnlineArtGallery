@@ -1,86 +1,104 @@
 ﻿@page "/create"
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.AspNetCore.Components.QuickGrid
-@using OnlineArtGallery.Configurations.Entities
 @using Microsoft.AspNetCore.Identity
 
 @using OnlineArtGallery.Domain
 @using OnlineArtGallery.Data
-@using OnlineArtGallery.Components.Account
+@using Microsoft.AspNetCore.Authorization
 
 @inject UserManager<OnlineArtGalleryUser> UserManager
 @inject SignInManager<OnlineArtGalleryUser> SignInManager
 @implements IAsyncDisposable
 @inject IDbContextFactory<OnlineArtGallery.Data.OnlineArtGalleryContext> DbFactory
 
+@attribute [Authorize(Roles = "Administrator, Artist")]
+
 <PageTitle>Index</PageTitle>
 
-<h1>List of created artworks</h1>
+<div class="container">
+    <div class="col-12">
+        <h1 class="text-center">Create</h1>
+    </div>
+</div>
 
+<div class="container-fluid">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th></th>
+            </tr>
+        </thead>
+        @foreach (var artwork in filteredArtwork)
+        {
+            <tbody>
+                <tr>
+                    <td><img src="@artwork.ImagePath" id="image" height="150px" width="150px" /></td>
+                    <td>@artwork.Name</td>
+                    <td>@artwork.Description</td>
+                    <td>$@artwork.Price</td>
+                    <td>
+                        <a href="@($"create/edit?id={artwork.Id}")" class="btn btn-primary btn-md">Edit</a>
+                        <a href="@($"create/details?id={artwork.Id}")" class="btn btn-primary btn-md">Details</a>
+                        <a href="@($"create/delete?id={artwork.Id}")" class="btn btn-danger btn-md">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        }
+    </table>
+</div>
 <p>
-    <a href="create/create">Create New</a>
+    <a href="create/create" class="btn btn-primary btn-lg">Create New</a>
 </p>
 
-
-<QuickGrid Class="table" Items="filteredArtwork">
-
-    <TemplateColumn Context="artwork">
-        <img src="@artwork.ImagePath" id="image" height="150px" width="150px" />
-    </TemplateColumn>
-
-    <PropertyColumn Property="artwork => artwork.Name"/>
-    <PropertyColumn Property="artwork => artwork.Description"/>
-    <PropertyColumn Property="artwork => artwork.Price"/>
-    <PropertyColumn Property="artwork => artwork.DateCreated" />
-    <PropertyColumn Property="artwork => artwork.DateUpdated" />
-    <PropertyColumn Property="artwork => artwork.CreatedBy" />
-    <PropertyColumn Property="artwork => artwork.UpdatedBy" />
-
-    <TemplateColumn Context="artwork">
-        <a href="@($"create/edit?id={artwork.Id}")">Edit</a> |
-        <a href="@($"create/details?id={artwork.Id}")">Details</a> |
-        <a href="@($"create/delete?id={artwork.Id}")">Delete</a>
-    </TemplateColumn>
-</QuickGrid>
-
 @code {
-
-    // private OnlineArtGalleryContext context = default!;
-    // protected override void OnInitialized()
-    // {
-    //     context = DbFactory.CreateDbContext();
-    // }
-
-    // public async ValueTask DisposeAsync() => await context.DisposeAsync();
+    private OnlineArtGalleryContext context = default!;
     private OnlineArtGalleryUser user = default!;
     private string? username;
-
-    private OnlineArtGalleryContext context = default!;
     private IQueryable<Artwork> filteredArtwork = Enumerable.Empty<Artwork>().AsQueryable(); // Initialize empty
-
-    // [SupplyParameterFromQuery]
-    // public int UserId { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        var claimsPrincipal = SignInManager.Context.User;
-        if (claimsPrincipal != null)
+        await LoadArtworkAsync();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadArtworkAsync();
+    }
+
+    private async Task LoadArtworkAsync()
+    {
+        try
         {
-            user = await UserManager.GetUserAsync(claimsPrincipal);
-            username = user?.UserName ?? "Unknown";
+            var claimsPrincipal = SignInManager.Context.User;
+            if (claimsPrincipal != null)
+            {
+                user = await UserManager.GetUserAsync(claimsPrincipal);
+                username = user?.UserName ?? "Unknown";
+                Console.WriteLine($"Logged-in Username: {username}"); // Debugging
+            }
+            else
+            {
+                username = "Unknown";
+            }
+
+            context = DbFactory.CreateDbContext();
+
+            filteredArtwork = context.Artwork.Where(a => a.CreatedBy == username);
+
+            await base.OnInitializedAsync();
         }
-        else
+
+        catch (Exception ex)
         {
-            username = "Unknown";
+            Console.WriteLine($"Error during initialization: {ex.Message}");
         }
-
-        context = DbFactory.CreateDbContext();
-
-        filteredArtwork = context.Artwork.Where(artwork => artwork.CreatedBy == username);
-
-        await base.OnInitializedAsync();
     }
 
     public async ValueTask DisposeAsync() => await context.DisposeAsync();
-
 }

@@ -1,6 +1,7 @@
 ﻿@page "/create/create"
 @using Microsoft.EntityFrameworkCore
 @using OnlineArtGallery.Domain
+@using Microsoft.AspNetCore.Identity
 @using OnlineArtGallery.Data
 @using OnlineArtGallery.Components.Account
 @inject UserManager<OnlineArtGalleryUser> UserManager
@@ -35,7 +36,7 @@
                 <ValidationMessage For="() => Artwork.Price" class="text-danger" /> 
             </div>        
             <div class="mb-3">
-                <label for="image" class="form-label">Image:</label> 
+                <label for="image" class="form-label">Image Link:</label> 
                 <InputText id="image" @bind-Value="Artwork.ImagePath" class="form-control" /> 
                 <ValidationMessage For="() => Artwork.ImagePath" class="text-danger" /> 
             </div>
@@ -49,50 +50,47 @@
 </div>
 
 @code {
+    
+    [SupplyParameterFromForm]
+    private Artwork Artwork { get; set; } = new();
+
     private OnlineArtGalleryUser user = default!;
     private string? username;
 
     protected override async Task OnInitializedAsync()
     {
-        var claimsPrincipal = SignInManager.Context.User;
-        if (claimsPrincipal != null)
+        try
         {
-            user = await UserManager.GetUserAsync(claimsPrincipal);
-            username = user?.UserName ?? "Unknown"; //Fallback if the username is not found
+            var claimsPrincipal = SignInManager.Context.User;
+            if (claimsPrincipal != null)
+            {
+                user = await UserManager.GetUserAsync(claimsPrincipal);
+                username = user?.UserName ?? "Unknown";
+            }
+            else
+            {
+                username = "Unknown";
+            }
         }
-        else
+        catch (Exception ex)
         {
-            username = "Unknown";
+            Console.WriteLine($"Error during initialization: {ex.Message}");
         }
+        await base.OnInitializedAsync();
     }
-    [SupplyParameterFromForm]
-    private Artwork Artwork { get; set; } = new();
-
-    private string? discription;
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
 
     private async Task AddArtwork()
     {
-        // if (Artwork.Image != null)
-        // {
-        //     Save the image to the server and store the path
-        //     var folderPath = Path.Combine(WebHostEnvironment.WebRootPath, "images");
+        using var context = DbFactory.CreateDbContext();
 
         Artwork.DateUpdated = DateTime.Now;
         Artwork.DateCreated = DateTime.Now;
         Artwork.CreatedBy = username;
         Artwork.UpdatedBy = username;
+
         context.Artwork.Add(Artwork);
         await context.SaveChangesAsync();
         NavigationManager.NavigateTo("/create");
     }
-    // private async Task OnImageUpload(InputFileChangeEventArgs e)
-    // {
-    //     discription = "Testing";
-    //     var file = e.File;
-    //     if (file != null)
-    //     {
-    //         discription = "Nope";
-    //         Artwork.Image = file;
-    //     }
-    // }
 }

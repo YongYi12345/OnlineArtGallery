@@ -10,31 +10,46 @@
 
 <h1>Index</h1>
 
+<div class="container-fluid mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <!-- Discussion Title -->
+            <div class="mb-4">
+                <h1 class="fw-bold">@GetDiscussionTitle(DiscussionId)</h1>
+                <h2 class="text-muted">@GetDiscussionText(DiscussionId)</h2>
+            </div>
 
-<QuickGrid Class="table" Items="filteredComments">
-    <PropertyColumn Property="comment => comment.Text" />
-    <PropertyColumn Property="comment => comment.DateCreated" />
-    <PropertyColumn Property="comment => comment.DateUpdated" />
-    <PropertyColumn Property="comment => comment.CreatedBy" />
-    <PropertyColumn Property="comment => comment.UpdatedBy" />
-
-    <TemplateColumn Context="comment">
-        <a href="@($"comments/edit?id={comment.Id}")">Edit</a> |
-        <a href="@($"comments/details?id={comment.Id}")">Details</a> |
-        <a href="@($"comments/delete?id={comment.Id}")">Delete</a>
-    </TemplateColumn>
-</QuickGrid>
-
-<div>
-    <a href="@($"/discussion/details?id={DiscussionId}")">Back to List</a>
+            <!-- Comments Section -->
+            <div class="comments-section">
+                <h4 class="mb-4">Comments</h4>
+                <a href="@($"/comments/create?discussionid={DiscussionId}")" class="btn btn-primary btn-md"> Add Comments</a>
+                @foreach (var comment in filteredComments)
+                {
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <h5 class="fw-bold mb-1">@comment.CreatedBy</h5>
+                                <small class="text-muted">@comment.DateCreated.ToString("MMMM dd, yyyy hh:mm tt")</small>
+                            </div>
+                            <p class="mt-2">@comment.Text</p>
+                        </div>
+                    </div>
+                }
+                <a href="@($"/discussion/details?id={DiscussionId}")" class="btn btn-primary btn-md">Back to List</a>
+            </div>
+        </div>
+    </div>
 </div>
 
 @code {
+    PaginationState paginationState = new PaginationState { ItemsPerPage = 10 };
     private OnlineArtGalleryContext context = default!;
     private IQueryable<Comment> filteredComments = Enumerable.Empty<Comment>().AsQueryable(); // Initialize empty
 
     [SupplyParameterFromQuery]
     public int DiscussionId { get; set; }
+
+    private Dictionary<int, Discussion> DiscussDict = new Dictionary<int, Discussion>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -42,8 +57,19 @@
 
         // Fetch only the comments where DiscussionId equals the one passed in the query string
         filteredComments = context.Comment.Where(comment => comment.DiscussionId == DiscussionId);
-
+        DiscussDict = context.Discussion.ToDictionary(o => o.Id, o => o);
         await base.OnInitializedAsync();
+    }
+
+    private string GetDiscussionText(int discussionId)
+    {
+        var discussion = context.Discussion.FirstOrDefault(p => p.Id == discussionId);
+        return discussion == null ? string.Empty :$"{ DiscussDict[discussionId].Text}";
+    }
+    private string GetDiscussionTitle(int discussionId)
+    {
+        var discussion = context.Discussion.FirstOrDefault(p => p.Id == discussionId);
+        return discussion == null ? string.Empty : $"{DiscussDict[discussionId].Title}";
     }
 
     public async ValueTask DisposeAsync() => await context.DisposeAsync();

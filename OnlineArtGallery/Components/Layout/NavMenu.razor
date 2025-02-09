@@ -1,5 +1,13 @@
 ﻿@implements IDisposable
+@using Microsoft.AspNetCore.Identity
+
+@using OnlineArtGallery.Domain
+@using OnlineArtGallery.Data
+@using OnlineArtGallery.Components.Account
 @inject NavigationManager NavigationManager
+@inject UserManager<OnlineArtGalleryUser> UserManager
+@inject SignInManager<OnlineArtGalleryUser> SignInManager
+
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">OnlineArtGallery</a>
@@ -47,6 +55,12 @@
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="auction">
                         <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Auction
+                    </NavLink>
+                </div>
+
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="profile")">
+                        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Profile
                     </NavLink>
                 </div>
 
@@ -99,6 +113,25 @@
     {
         currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
         NavigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    private OnlineArtGalleryUser user = default!;
+    private string? username;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var claimsPrincipal = SignInManager.Context.User;
+        if (claimsPrincipal != null)
+        {
+            // Use UserManager to get the OnlineArtGalleryUser object
+            user = await UserManager.GetUserAsync(claimsPrincipal);
+            username = user?.UserName ?? "Unknown"; //Fallback if the username is not found
+        }
+        else
+        {
+            username = "Unknown";
+        }
     }
 
     private void OnLocationChanged(object? sender, LocationChangedEventArgs e)

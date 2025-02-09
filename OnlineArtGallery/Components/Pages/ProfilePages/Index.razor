@@ -1,0 +1,117 @@
+﻿@page "/profile"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using OnlineArtGallery.Domain
+@using OnlineArtGallery.Data
+@using OnlineArtGallery.Configurations.Entities
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<OnlineArtGalleryUser> UserManager
+@inject SignInManager<OnlineArtGalleryUser> SignInManager
+@implements IAsyncDisposable
+@inject IDbContextFactory<OnlineArtGallery.Data.OnlineArtGalleryContext> DbFactory
+
+<PageTitle>Profile</PageTitle>
+
+<h1>Profile</h1>
+
+<QuickGrid Class="table" Items="filteredProfile">
+    <TemplateColumn Context="profile">
+        <img src="@profile.ImagePath" id="image" height="150px" width="150px" />
+    </TemplateColumn>
+    <PropertyColumn Property="profile => profile.Name" />
+    <PropertyColumn Property="profile => profile.Description" />
+
+    <TemplateColumn Context="profile">
+        <a href="@($"profile/edit?id={profile.Id}")">Edit</a> |
+        <a href="@($"profile/details?id={profile.Id}")">Details</a> |
+        <a href="@($"profile/delete?id={profile.Id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+
+    private OnlineArtGalleryUser user = default!;
+    private string? username;
+
+    private OnlineArtGalleryContext context = default!;
+    private IQueryable<Profile> filteredProfile = Enumerable.Empty<Profile>().AsQueryable(); // Initialize empty
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadProfileAsync();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadProfileAsync();
+    }
+
+    private async Task LoadProfileAsync()
+    {
+        try
+        {
+            var claimsPrincipal = SignInManager.Context.User;
+            if (claimsPrincipal != null)
+            {
+                user = await UserManager.GetUserAsync(claimsPrincipal);
+                username = user?.UserName ?? "Unknown";
+                Console.WriteLine($"Logged-in Username: {username}"); // Debugging
+            }
+            else
+            {
+                username = "Unknown";
+            }
+
+            context = DbFactory.CreateDbContext();
+
+            var existingProfile = await context.Profile.FirstOrDefaultAsync(profile => profile.CreatedBy == username);
+
+            if (existingProfile == null)
+            {
+                // If no profile exists, create a new one
+                await AddProfileAsync();
+            }
+
+            filteredProfile = context.Profile.Where(profile => profile.CreatedBy == username);
+
+            await base.OnInitializedAsync();
+        }
+
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error during initialization: {ex.Message}");
+        }
+    }
+
+    [SupplyParameterFromForm]
+    private Profile Profile { get; set; } = new();
+
+    private async Task AddProfileAsync()
+    {
+        try
+        {
+            using var context = DbFactory.CreateDbContext();
+
+            var newProfile = new Profile
+                {
+                    Name = username,
+                    Description = "Describe yourself",
+                    ImagePath = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3NAABEIAJQAnwMBIgACEQEDEQH/xAAbAAEAAQUBAAAAAAAAAAAAAAAABgECBAUHAEADoQAAICAQICBQoEBAcAAAAAAAABAgMEBRExQQYSIVFhEyIyQlJxgZHB0RQjYrEkcqHhMzREU3OC8P/EABYBAQEBAAAAAAAAAAAAAAAAAAACAf/EABYRAQEBAAAAAAAAAAAAAAAAAAABEf/aAAwDAQACEQMRAD8A7iAAAAADcxc/UMfT6vKZE9t/Riu2UvciI6l0gy8xuNMnRS+UX5zXiwJTm6vhYbcbr4ua9SHbL5Glyeljf+Vxf+1svovuRl9u/iANrb0i1Oxva+Fa7oQX13Md6xqMv9ZaviYQAzo6zqMXv+Mtfve5k1dJNSrfbbXYv1w+xqABKcbpXB7LKx5R/VW9/wCjN3halh5q/h74yl7L7JfI52VTcZdaLakuDXIDpwIbpnSTIxmq8ze6r2vXX3JXi5dGXSrcexTg+a5eD7gPcAAAAAAAA1WtaxXp0OrHaeRJebDu8X4HrrOpQ03Fdj2lZLsrh3v7EDvusyLZW3Scpze7bAuycm7KuldfNznLi39DyAAAAAAIpyeyW/uAANNcVt7wAAAAycDNvwb1bjz29qL4SXiYwA6DpWp06lR5SrzZx9Otvti/sZxzfCyrcLJhfRLaceXJruZPtOzKs/GjfU+PZJey+aAygAALbJxrhKc3tGKbbfJFxH+l2b5LFhiQfnXds/CK+7/YCOatny1DNnc3tDhXF8omGAAAAA9sTFuy71TRHrTfyXizxSbaS7W+C7yb6RgR0/EUNk7Z9tkvHu+AZWNg6Bi46TyIq+zm5ej8vubWNcIJKMIxS5JJFwCVllNVserbVCce6UUzT6h0eptXWw9qrPY381/Y3YA57dTZRZKu2DhOL2aZYS/pDp6y8WV8F+fVHdbetHmiIBUAAGhtOj+pPAzUpyaotfVn4dzNWAOnJ7oqajo1mvL0yKm97afMl49zNuAZANfyfxWq3y33hB9SPuXZ++5O8mxU49tr4Qg5fJHNG3J9aXF9rYAAAAABsNBpV2q0KS3UG5/JE1If0Zl1dVh+qEkv/fAmATQABgAABAtQpWPm31RW0YTaS8CekG1mSnqmTJe3t8uwNjDAAUAADddE8nyOp+Sb2jdFrbxXavqTU5th3PHy6bl6k037tzpIGBrsnDSMtr/ba+fYc/J90gW+jZX8n1RAeQAAAAAB7Yd7xcqq+HpQkn8Of9Nye12QtrhZW04TW8X4HPDdaDq6xP4fJf5D9GXHqf2DKlYKRlGcFODTi+DT3TKhIAWXW101ystkoQXGTAszMiOJjWXz4QXZ4vkiAzlKcpSk95Se795sta1V6hYoV7xx4PzU+LfezWBUAAGgAAcmdKxZueNVN8ZQTfyOaHScFfwWP/xx/YDz1Wt26ZlQS3bqlt79jne+506STTT4M5vmUvGy7qHxrm19gPEAAAAAA95ssHRMzLSk4qmv2p8/hxAxsLPysJ7Y1rit9+q1vF/Bm0r6T3r/ABMauX8ra+5nY/RvEgvzrLLXz2fVX3MuGi6dH/Sxf8zb+oS0tvSbJaaqoqg/HzjU5WXkZc+tk2ym1wT4L3Il89E06a/y0U/CTX1MPI6NY8lvj3TqfdLzkBFgZ2bpGXhbysh1q168O1fHmjBCgAAAABWMXOShHtbey+J02EVCEYrglsiAaFR+J1bGhyUuu/cu37HQABDul2J5LOjkpebdHtf6l/bYmJg6xhLPwbKVt1/Sg3ykBz4FXFxbjKLTj2NPkygAvppsyLY1Uwc5yeySLEm2ku1vs2JlommRwaFOxL8RYk5P2V3AW6VolOGlbdtZkd/KPu+5tQAgAAAAADR6voUL4u7DioW8XBcJ+7uZvACVzucJQk4Ti4yi9mnyKEq6Q6Wr63l0R/NgvPS9dfdEV5BegB6Y9FmTfCmr05vZASTobidl2ZJcfy4fu/oSc8MLGhiYtePX6MI7e/vZ7gAABFOlWl9Wbz6I9j/xkuXcyNnTZxjKLjJbxa2afMhWvaNLAm7qE5YsnyXoeD8AHRnD/EZjvmvMo2a8ZPh9yWmt6PY/kNLqbW0rN5v48P6bGyCKAAAAAAAAAAAQrW8JYWfKMFtXPz4+G/L5k1NJ0roU8Ku/btrns34P++wbEVJd0W0vyFf4y+O1ti8yL9WPf72YXR3RHdKOZlx2q41wfreL8CW7bBSoAAAAAWzhGyDhOKlGS2aa3TRcAPB0qEUq1sktku5FhlFkoKXHiGWPAF8q5LxLdnzWwSoAAAAAAqk3yZfGtvj2IGPMvePC2DjdCM4v1ZLdHrGKjwRcFSKJJFQA0AAAAAAAAAAAo0nxQAFrrj3FPJx8QAw8nHxKquPcABdsioAaAAAAAAAA/9k=",
+                    DateUpdated = DateTime.Now,
+                    DateCreated = DateTime.Now,
+                    CreatedBy = username,
+                    UpdatedBy = username
+                };
+
+            context.Profile.Add(newProfile);
+            await context.SaveChangesAsync();
+            Console.WriteLine("Profile added successfully.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error adding profile: {ex.Message}");
+        }
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}

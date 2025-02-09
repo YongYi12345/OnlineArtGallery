@@ -1,25 +1,23 @@
-﻿@page "/discussion/edit"
-
+﻿@page "/profile/edit"
 @using Microsoft.EntityFrameworkCore
+@using OnlineArtGallery.Domain
 @using Microsoft.AspNetCore.Identity
 
-@using OnlineArtGallery.Domain
 @using OnlineArtGallery.Data
 @using OnlineArtGallery.Components.Account
 
 @inject UserManager<OnlineArtGalleryUser> UserManager
 @inject SignInManager<OnlineArtGalleryUser> SignInManager
-
 @inject IDbContextFactory<OnlineArtGallery.Data.OnlineArtGalleryContext> DbFactory
 @inject NavigationManager NavigationManager
 
 <PageTitle>Edit</PageTitle>
 
-<h1>Edit Topic</h1>
+<h1>Edit</h1>
 
-<h2>Discussion</h2>
+<h2>Profile</h2>
 <hr />
-@if (Discussion is null)
+@if (Profile is null)
 {
     <p><em>Loading...</em></p>
 }
@@ -27,19 +25,24 @@ else
 {
     <div class="row">
         <div class="col-md-4">
-            <EditForm method="post" Model="Discussion" OnValidSubmit="UpdateDiscussion" FormName="edit" Enhance>
+            <EditForm method="post" Model="Profile" OnValidSubmit="UpdateProfile" FormName="edit" Enhance>
                 <DataAnnotationsValidator />
                 <ValidationSummary role="alert"/>
-                <input type="hidden" name="Discussion.Id" value="@Discussion.Id" />
+                <input type="hidden" name="Profile.Id" value="@Profile.Id" />
                 <div class="mb-3">
-                    <label for="title" class="form-label">Tite:</label>
-                    <InputText id="title" @bind-Value="Discussion.Title" class="form-control" />
-                    <ValidationMessage For="() => Discussion.Title" class="title-danger" />
-                </div>                
+                    <label for="name" class="form-label">Image:</label>
+                    <InputText id="image" @bind-Value="Profile.ImagePath" class="form-control" />
+                    <ValidationMessage For="() => Profile.ImagePath" class="text-danger" />
+                </div>
                 <div class="mb-3">
-                    <label for="text" class="form-label">Text:</label>
-                    <InputText id="text" @bind-Value="Discussion.Text" class="form-control" />
-                    <ValidationMessage For="() => Discussion.Text" class="text-danger" />
+                    <label for="name" class="form-label">Name:</label>
+                    <InputText id="name" @bind-Value="Profile.Name" class="form-control" />
+                    <ValidationMessage For="() => Profile.Name" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="name" class="form-label">Description:</label>
+                    <InputText id="description" @bind-Value="Profile.Description" class="form-control" />
+                    <ValidationMessage For="() => Profile.Description" class="text-danger" />
                 </div>
                 <button type="submit" class="btn btn-primary">Save</button>
             </EditForm>
@@ -48,7 +51,7 @@ else
 }
 
 <div>
-    <a href="/discussion">Back to List</a>
+    <a href="/profile">Back to List</a>
 </div>
 
 @code {
@@ -56,17 +59,18 @@ else
     private int Id { get; set; }
 
     [SupplyParameterFromForm]
-    private Discussion? Discussion { get; set; }
+    private Profile? Profile { get; set; }
 
     private OnlineArtGalleryUser user = default!;
     private string? username;
 
+
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        Discussion ??= await context.Discussion.FirstOrDefaultAsync(m => m.Id == Id);
+        Profile ??= await context.Profile.FirstOrDefaultAsync(m => m.Id == Id);
 
-        if (Discussion is null)
+        if (Profile is null)
         {
             NavigationManager.NavigateTo("notfound");
         }
@@ -82,23 +86,23 @@ else
         {
             username = "Unknown";
         }
-
     }
 
     // To protect from overposting attacks, enable the specific properties you want to bind to.
     // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
-    private async Task UpdateDiscussion()
+    private async Task UpdateProfile()
     {
         using var context = DbFactory.CreateDbContext();
-        Discussion.DateUpdated = DateTime.Now;
-        Discussion.UpdatedBy = username;
-        context.Attach(Discussion!);
-        context.Entry(Discussion).Property(a => a.Title).IsModified = true;
-        context.Entry(Discussion).Property(a => a.Text).IsModified = true;
-        context.Entry(Discussion).Property(a => a.DateUpdated).IsModified = true;
-        context.Entry(Discussion).Property(a => a.UpdatedBy).IsModified = true;
-        context.Entry(Discussion).Property(a => a.CreatedBy).IsModified = false;
-        context.Entry(Discussion).Property(a => a.DateCreated).IsModified = false;
+        Profile.DateUpdated = DateTime.Now;
+        Profile.UpdatedBy = username;
+        context.Attach(Profile!);
+        // context.Entry(Profile).Property(a => a.Name).IsModified = true;
+        context.Entry(Profile).Property(a => a.Description).IsModified = true;
+        context.Entry(Profile).Property(a => a.ImagePath).IsModified = true;
+        context.Entry(Profile).Property(a => a.DateUpdated).IsModified = true;
+        context.Entry(Profile).Property(a => a.UpdatedBy).IsModified = true;
+        context.Entry(Profile).Property(a => a.CreatedBy).IsModified = false;
+        context.Entry(Profile).Property(a => a.DateCreated).IsModified = false;
 
         try
         {
@@ -106,7 +110,7 @@ else
         }
         catch (DbUpdateConcurrencyException)
         {
-            if (!DiscussionExists(Discussion!.Id))
+            if (!ProfileExists(Profile!.Id))
             {
                 NavigationManager.NavigateTo("notfound");
             }
@@ -116,12 +120,12 @@ else
             }
         }
 
-        NavigationManager.NavigateTo("/discussion");
+        NavigationManager.NavigateTo("/profile");
     }
 
-    private bool DiscussionExists(int id)
+    private bool ProfileExists(int id)
     {
         using var context = DbFactory.CreateDbContext();
-        return context.Discussion.Any(e => e.Id == id);
+        return context.Profile.Any(e => e.Id == id);
     }
 }

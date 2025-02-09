@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using OnlineArtGallery.Configurations.Entities;
 using OnlineArtGallery.Data;
 using OnlineArtGallery.Domain;
+using System.Reflection.Emit;
 
 namespace OnlineArtGallery.Data
 {
@@ -11,6 +12,9 @@ namespace OnlineArtGallery.Data
 
         public DbSet<OnlineArtGallery.Domain.Artwork> Artwork { get; set; } = default!;
         public DbSet<OnlineArtGallery.Domain.Wishlist> Wishlist { get; set; } = default!;
+        public DbSet<OnlineArtGallery.Domain.Discussion> Discussion { get; set; } = default!;
+        public DbSet<OnlineArtGallery.Domain.Comment> Comment { get; set; } = default!;
+        public DbSet<OnlineArtGallery.Domain.Profile> Profile { get; set; } = default!;
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -19,8 +23,7 @@ namespace OnlineArtGallery.Data
             builder.ApplyConfiguration(new WishlistSeed());
             builder.ApplyConfiguration(new UserSeed());
         }
-        public DbSet<OnlineArtGallery.Domain.Discussion> Discussion { get; set; } = default!;
-        public DbSet<OnlineArtGallery.Domain.Comment> Comment { get; set; } = default!;
+
         
     }
 }

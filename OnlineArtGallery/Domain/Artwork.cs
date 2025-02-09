@@ -6,11 +6,11 @@ namespace OnlineArtGallery.Domain
 {
     public class Artwork : BaseDomainModel
     {
+        public int ProfileId { get; set; }
         public string? Name { get; set; }
         public string? Description { get; set; }
         public double Price { get; set; }
         public string? ImagePath { get; set; }
-        [NotMapped]
-        public IBrowserFile? Image { get; set; }
+        //public bool Likes { get; set; }
     }
 }

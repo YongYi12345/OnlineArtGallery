@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineArtGallery.Data;
 
@@ -11,9 +12,11 @@ using OnlineArtGallery.Data;
 namespace OnlineArtGallery.Migrations
 {
     [DbContext(typeof(OnlineArtGalleryContext))]
-    partial class OnlineArtGalleryContextModelSnapshot : ModelSnapshot
+    [Migration("20250208153255_Profile2")]
+    partial class Profile2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -224,15 +227,15 @@ namespace OnlineArtGallery.Migrations
                         {
                             Id = "3781efa7-66dc-47f0-860f-e506d04102e4",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a52268d9-3771-44f0-821c-a0c035960ac6",
+                            ConcurrencyStamp = "2a5f6e27-3982-4076-a78d-62035c529582",
                             Email = "admin@localhost.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@LOCALHOST.COM",
                             NormalizedUserName = "ADMIN@LOCALHOST.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEIFRjk//Cqi8NRcxWnDnaaimqwp0Z5Ex89TEjJ8DK7jHrFnTlKGZQGoakCZp3LUiNg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEHUsI/lx4HnBIxdWcHaZSAfXVJNKeLmBBgpFCDKBqtYOqadG05DOhZIY1KGJVi9NbA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "cb277ea1-e9ee-4580-bb1b-fd7f61524095",
+                            SecurityStamp = "8cc70faf-08f6-419f-b954-1d0d82e26715",
                             TwoFactorEnabled = false
                         });
                 });
@@ -295,9 +298,6 @@ namespace OnlineArtGallery.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("DiscussionId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProfileId")
                         .HasColumnType("int");
 
                     b.Property<string>("Text")
@@ -409,8 +409,8 @@ namespace OnlineArtGallery.Migrations
                             Id = 1,
                             ArtworkId = 0,
                             CreatedBy = "System",
-                            DateCreated = new DateTime(2025, 2, 9, 20, 4, 42, 761, DateTimeKind.Local).AddTicks(4674),
-                            DateUpdated = new DateTime(2025, 2, 9, 20, 4, 42, 761, DateTimeKind.Local).AddTicks(4687),
+                            DateCreated = new DateTime(2025, 2, 8, 23, 32, 54, 992, DateTimeKind.Local).AddTicks(7594),
+                            DateUpdated = new DateTime(2025, 2, 8, 23, 32, 54, 992, DateTimeKind.Local).AddTicks(7609),
                             UpdatedBy = "System"
                         },
                         new
@@ -418,8 +418,8 @@ namespace OnlineArtGallery.Migrations
                             Id = 2,
                             ArtworkId = 1,
                             CreatedBy = "System",
-                            DateCreated = new DateTime(2025, 2, 9, 20, 4, 42, 761, DateTimeKind.Local).AddTicks(4689),
-                            DateUpdated = new DateTime(2025, 2, 9, 20, 4, 42, 761, DateTimeKind.Local).AddTicks(4690),
+                            DateCreated = new DateTime(2025, 2, 8, 23, 32, 54, 992, DateTimeKind.Local).AddTicks(7611),
+                            DateUpdated = new DateTime(2025, 2, 8, 23, 32, 54, 992, DateTimeKind.Local).AddTicks(7611),
                             UpdatedBy = "System"
                         });
                 });

@@ -20,7 +20,6 @@
         <EditForm method="post" Model="Comment" OnValidSubmit="AddComment" FormName="create" Enhance>
             <DataAnnotationsValidator />
             <ValidationSummary class="text-danger" role="alert"/>
-
             <div class="mb-3">
                 <label for="text" class="form-label">Text:</label> 
                 <InputText id="text" @bind-Value="Comment.Text" class="form-control" /> 
@@ -46,18 +45,26 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var claimsPrincipal = SignInManager.Context.User;
-        if (claimsPrincipal != null)
+        try
         {
-            // Use UserManager to get the OnlineArtGalleryUser object
-            user = await UserManager.GetUserAsync(claimsPrincipal);
-            username = user?.UserName??"Unknown";
+            var claimsPrincipal = SignInManager.Context.User;
+            if (claimsPrincipal != null)
+            {
+                user = await UserManager.GetUserAsync(claimsPrincipal);
+                username = user?.UserName ?? "Unknown";
+            }
+            else
+            {
+                username = "Unknown";
+            }
         }
-        else
+        catch (Exception ex)
         {
-            username = "Unknown";
+            Console.WriteLine($"Error during initialization: {ex.Message}");
         }
+        await base.OnInitializedAsync();
     }
+
     // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
     private async Task AddComment()
     {
@@ -66,6 +73,7 @@
         Comment.DateCreated = DateTime.Now;
         Comment.CreatedBy = username;
         Comment.UpdatedBy = username;
+        Comment.ProfileId = 
         Comment.DiscussionId = DiscussionId;
         context.Comment.Add(Comment);
         await context.SaveChangesAsync();

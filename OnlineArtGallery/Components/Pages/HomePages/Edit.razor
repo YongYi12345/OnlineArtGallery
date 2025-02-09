@@ -1,17 +1,17 @@
-﻿@page "/create/edit"
+﻿@page "/edit"
 
 @using Microsoft.EntityFrameworkCore
+@using OnlineArtGallery.Domain
 @using Microsoft.AspNetCore.Identity
 
-@using OnlineArtGallery.Domain
 @using OnlineArtGallery.Data
 @using OnlineArtGallery.Components.Account
 
 @inject UserManager<OnlineArtGalleryUser> UserManager
 @inject SignInManager<OnlineArtGalleryUser> SignInManager
-
 @inject IDbContextFactory<OnlineArtGallery.Data.OnlineArtGalleryContext> DbFactory
 @inject NavigationManager NavigationManager
+@attribute [Authorize(Roles = "Administrator")]
 
 <PageTitle>Edit</PageTitle>
 
@@ -58,7 +58,7 @@ else
 }
 
 <div>
-    <a href="/create">Back to List</a>
+    <a href="/" class="btn btn-primary btn-md">Back to List</a>
 </div>
 
 @code {
@@ -68,28 +68,22 @@ else
     [SupplyParameterFromForm]
     private Artwork? Artwork { get; set; }
 
-    private OnlineArtGalleryUser user = default!;
-    private string? username;
+    [SupplyParameterFromForm]
+    private Profile Profile { get; set; } = new();
+
 
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        Artwork ??= await context.Artwork.FirstOrDefaultAsync(m => m.Id == Id);
 
-        if (Artwork is null)
+        try
+        {
+            Artwork = await context.Artwork.FirstOrDefaultAsync(m => m.Id == Id);
+            Profile = await context.Profile.FirstOrDefaultAsync(p => p.Id == Artwork.ProfileId);
+        }
+        catch (Exception ex)
         {
             NavigationManager.NavigateTo("notfound");
-        }
-
-        var claimsPrincipal = SignInManager.Context.User;
-        if (claimsPrincipal != null)
-        {
-            user = await UserManager.GetUserAsync(claimsPrincipal);
-            username = user?.UserName ?? "Unknown";
-        }
-        else
-        {
-            username = "Unknown";
         }
     }
 
@@ -99,8 +93,18 @@ else
     {
         using var context = DbFactory.CreateDbContext();
 
+        if (Profile == null)
+        {
+            Profile = await context.Profile.FirstOrDefaultAsync(p => p.Id == Artwork.ProfileId);
+        }
+
+        if (Profile == null)
+        {
+            return;
+        }
+
         Artwork.DateUpdated = DateTime.Now;
-        Artwork.UpdatedBy = username;
+        Artwork.UpdatedBy = Profile.Name;
         context.Attach(Artwork!);
         context.Entry(Artwork).Property(a => a.Name).IsModified = true;
         context.Entry(Artwork).Property(a => a.Description).IsModified = true;
@@ -127,7 +131,7 @@ else
             }
         }
 
-        NavigationManager.NavigateTo("/create");
+        NavigationManager.NavigateTo("/");
     }
 
     private bool ArtworkExists(int id)

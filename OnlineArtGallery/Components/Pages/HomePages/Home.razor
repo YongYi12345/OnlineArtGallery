@@ -4,38 +4,51 @@
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using OnlineArtGallery.Data
 @inject IDbContextFactory<OnlineArtGallery.Data.OnlineArtGalleryContext> DbFactory
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Authorization
 
 <PageTitle>Home</PageTitle>
 
-<h1>List of artworks</h1>
+<div class="container">
+    <div class="col-12">
+    <h1 class ="text-center">List of artworks</h1>
+    </div>
+</div>
 
-<QuickGrid Class="table" Items="context.Artwork">
-
-    <TemplateColumn Context="artwork">
-        <img src="@artwork.ImagePath" id="image" height="150px" width="150px" />
-    </TemplateColumn>
-
-    <PropertyColumn Property="artwork => artwork.Name"/>
-    <PropertyColumn Property="artwork => artwork.Description"/>
-    <PropertyColumn Property="artwork => artwork.Price"/>
-    <PropertyColumn Property="artwork => artwork.DateCreated" />
-    <PropertyColumn Property="artwork => artwork.DateUpdated" />
-    <PropertyColumn Property="artwork => artwork.CreatedBy" />
-    <PropertyColumn Property="artwork => artwork.UpdatedBy" />
-
-    <TemplateColumn Context="artwork">
-        <a href="@($"/details?id={artwork.Id}")">Details</a>
-    </TemplateColumn>
-</QuickGrid>
-
+<div class="container">
+    <div class="row g-10 gy-4">
+        @foreach (var artwork in context.Artwork)
+        {
+            <div class="col-sm-4">
+                <div class="card" style="height: 510px;width: 300px; overflow: hidden;">
+                    <img src="@artwork.ImagePath" class="card-img-top" alt="@artwork.Name" style="height: 100%; width: 100%; object-fit: cover;">
+                    <div class="card-body" style="padding: 10px;">
+                        <h5 class="card-title">@artwork.Name</h5>
+                        <p class="card-text text-muted text-truncate" style="max-height: 2rem;">@artwork.Description</p>
+                        <p class="card-text text-muted text-truncate" style="max-height: 2rem;">Made By: @artwork.CreatedBy</p>
+                        <p class="card-text"><strong>Price:</strong> $@artwork.Price</p>
+                        <div class="d-flex justify-content-between mt-3">
+                            <a href="@($"/details?id={artwork.Id}")" class="btn btn-primary btn-md">Detail</a>
+                            <AuthorizeView Roles="Administrator">
+                                <a href="@($"/delete?id={artwork.Id}")" class="btn btn-primary btn-md">Delete</a>
+                            </AuthorizeView>
+                            <AuthorizeView Roles="Administrator">
+                                <a href="@($"/edit?id={artwork.Id}")" class="btn btn-primary btn-md">Edit</a>
+                            </AuthorizeView>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
 @code {
-
+    PaginationState paginationState = new PaginationState { ItemsPerPage = 10 };
     private OnlineArtGalleryContext context = default!;
     protected override void OnInitialized()
     {
         context = DbFactory.CreateDbContext();
     }
-
     public async ValueTask DisposeAsync() => await context.DisposeAsync();
 
 }
