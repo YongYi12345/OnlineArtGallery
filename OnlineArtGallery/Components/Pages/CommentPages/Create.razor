@@ -51,7 +51,7 @@
         {
             // Use UserManager to get the OnlineArtGalleryUser object
             user = await UserManager.GetUserAsync(claimsPrincipal);
-            username = user?.UserName ?? "Unknown"; //Fallback if the username is not found
+            username = user?.UserName??"Unknown";
         }
         else
         {
