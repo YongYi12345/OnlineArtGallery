@@ -57,8 +57,12 @@
 
 @code {
     private OnlineArtGalleryContext context = default!;
-    private OnlineArtGalleryUser user = default!;
-    private string? username;
+    // protected override void OnInitialized()
+    // {
+    //     context = DbFactory.CreateDbContext();
+    // }
+    private OnlineArtGalleryContext context = default!;
+    private IQueryable<Artwork> filteredArtwork = Enumerable.Empty<Artwork>().AsQueryable(); // Initialize empty
     private IQueryable<Artwork> filteredArtwork = Enumerable.Empty<Artwork>().AsQueryable(); // Initialize empty
 
     protected override async Task OnInitializedAsync()

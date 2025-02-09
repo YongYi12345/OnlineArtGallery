@@ -1,0 +1,66 @@
+﻿@page "/auction"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using OnlineArtGallery.Domain
+@using OnlineArtGallery.Data
+@implements IAsyncDisposable
+@inject IDbContextFactory<OnlineArtGallery.Data.OnlineArtGalleryContext> DbFactory
+
+
+<PageTitle>Index</PageTitle>
+
+<div class="w3-padding w3-xlarge w3-green">
+    <h1>Auction</h1>
+</div>
+
+
+<p>
+    <a href="auction/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.Auction">
+    <PropertyColumn Property="auction => auction.StartingBid" />
+    <PropertyColumn Property="auction => auction.DateCreated" />
+    <PropertyColumn Property="auction => auction.DateUpdated" />
+    <PropertyColumn Property="auction => auction.CreatedBy" />
+    <PropertyColumn Property="auction => auction.UpdatedBy" />
+    <TemplateColumn Context="auction" Title="Artwork">
+        @GetArtworkString(auction.ArtworkId)
+    </TemplateColumn>    
+    <TemplateColumn Context="wishlist" Title="Artwork">
+        <img src="@GetArtworkPath(wishlist.ArtworkId)" id="image" height="200px" width="200px" />
+    </TemplateColumn>
+
+    <TemplateColumn Context="auction">
+        <a href="@($"auction/edit?id={auction.Id}")">Edit</a> |
+        <a href="@($"auction/details?id={auction.Id}")">Details</a> |
+        <a href="@($"auction/delete?id={auction.Id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private OnlineArtGalleryContext context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+        ArtworkDict = context.Artwork.ToDictionary(o => o.Id, o => o);
+
+    }
+    private Dictionary<int, Artwork> ArtworkDict = new Dictionary<int, Artwork>();
+
+    private string GetArtworkString(int artworkId)
+    {
+        var artwork = context.Artwork.FirstOrDefault(v => v.Id == artworkId);
+        return artwork == null ? string.Empty : $"{ArtworkDict[artworkId].Name}";
+    }
+    private string GetArtworkPath(int artworkId)
+    {
+        var artwork = context.Artwork.FirstOrDefault(v => v.Id == artworkId);
+        return artwork == null ? string.Empty : $"{ArtworkDict[artworkId].ImagePath}";
+    }
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+
+    
+
+}

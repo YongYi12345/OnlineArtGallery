@@ -1,0 +1,118 @@
+﻿@page "/auction/create"
+@using Microsoft.EntityFrameworkCore
+@using OnlineArtGallery.Domain
+@using OnlineArtGallery.Data
+@inject IDbContextFactory<OnlineArtGallery.Data.OnlineArtGalleryContext> DbFactory
+@inject NavigationManager NavigationManager
+@using OnlineArtGallery.Configurations.Entities
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<OnlineArtGalleryUser> UserManager
+@inject SignInManager<OnlineArtGalleryUser> SignInManager
+
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>Auction</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="Auction" OnValidSubmit="AddAuction" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <div class="mb-3">
+                <label for="startingbid" class="form-label">StartingBid:</label> 
+                <InputNumber id="startingbid" @bind-Value="Auction.StartingBid" class="form-control" /> 
+                <ValidationMessage For="() => Auction.StartingBid" class="text-danger" /> 
+            </div>      
+            <div class="mb-3">
+                <label for="artworkid" class="form-label">Artwork:</label>
+                <InputSelect id="artworkid" @bind-Value="Auction.ArtworkId" class="form-control">
+                    <option value="">-- Select Artwork --</option>
+                    @if (filteredArtwork != null)
+                    {
+                        foreach (var money in filteredArtwork)
+                        {
+                            <option value="@money.Id">@money.Name</option>
+                        }
+                    }
+                </InputSelect>
+            </div>
+            <div class="mb-3">
+                <label for="datecreated" class="form-label">DateCreated:</label> 
+                <InputDate id="datecreated" @bind-Value="Auction.DateCreated" class="form-control" /> 
+                <ValidationMessage For="() => Auction.DateCreated" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="dateupdated" class="form-label">DateUpdated:</label> 
+                <InputDate id="dateupdated" @bind-Value="Auction.DateUpdated" class="form-control" /> 
+                <ValidationMessage For="() => Auction.DateUpdated" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="createdby" class="form-label">CreatedBy:</label> 
+                <InputText id="createdby" @bind-Value="Auction.CreatedBy" class="form-control" /> 
+                <ValidationMessage For="() => Auction.CreatedBy" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="updatedby" class="form-label">UpdatedBy:</label> 
+                <InputText id="updatedby" @bind-Value="Auction.UpdatedBy" class="form-control" /> 
+                <ValidationMessage For="() => Auction.UpdatedBy" class="text-danger" /> 
+            </div>        
+
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/auctions">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private Auction Auction { get; set; } = new();
+
+    private OnlineArtGalleryUser user = default!;
+    private string? username;
+
+    private OnlineArtGalleryContext context = default!;
+    private IQueryable<Artwork> filteredArtwork = Enumerable.Empty<Artwork>().AsQueryable(); // Initialize empty
+
+    
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        var claimsPrincipal = SignInManager.Context.User;
+        if (claimsPrincipal != null)
+        {
+            user = await UserManager.GetUserAsync(claimsPrincipal);
+            username = user?.UserName ?? "Unknown";
+        }
+        else
+        {
+            username = "Unknown";
+        }
+
+        context = DbFactory.CreateDbContext();
+
+        filteredArtwork = context.Artwork.Where(artwork => artwork.CreatedBy == username);
+
+        await base.OnInitializedAsync();
+
+    }
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddAuction()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Auction.Add(Auction);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/auction");
+    }
+    
+}
+
+
+

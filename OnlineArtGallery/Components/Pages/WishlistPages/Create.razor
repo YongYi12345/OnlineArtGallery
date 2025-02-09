@@ -1,8 +1,12 @@
-﻿@page "/wishlists/create"
+﻿@page "/wishlist/create"
 @using Microsoft.EntityFrameworkCore
 @using OnlineArtGallery.Domain
+@using OnlineArtGallery.Data
 @inject IDbContextFactory<OnlineArtGallery.Data.OnlineArtGalleryContext> DbFactory
 @inject NavigationManager NavigationManager
+@inject UserManager<OnlineArtGalleryUser> UserManager
+@inject SignInManager<OnlineArtGalleryUser> SignInManager
+@using Microsoft.AspNetCore.Identity
 
 <PageTitle>Create</PageTitle>
 
@@ -19,27 +23,8 @@
                 <label for="artworkid" class="form-label">ArtworkId:</label> 
                 <InputNumber id="artworkid" @bind-Value="Wishlist.ArtworkId" class="form-control" /> 
                 <ValidationMessage For="() => Wishlist.ArtworkId" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="datecreated" class="form-label">DateCreated:</label> 
-                <InputDate id="datecreated" @bind-Value="Wishlist.DateCreated" class="form-control" /> 
-                <ValidationMessage For="() => Wishlist.DateCreated" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="dateupdated" class="form-label">DateUpdated:</label> 
-                <InputDate id="dateupdated" @bind-Value="Wishlist.DateUpdated" class="form-control" /> 
-                <ValidationMessage For="() => Wishlist.DateUpdated" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="createdby" class="form-label">CreatedBy:</label> 
-                <InputText id="createdby" @bind-Value="Wishlist.CreatedBy" class="form-control" /> 
-                <ValidationMessage For="() => Wishlist.CreatedBy" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="updatedby" class="form-label">UpdatedBy:</label> 
-                <InputText id="updatedby" @bind-Value="Wishlist.UpdatedBy" class="form-control" /> 
-                <ValidationMessage For="() => Wishlist.UpdatedBy" class="text-danger" /> 
-            </div>        
+            </div> 
+            
             <button type="submit" class="btn btn-primary">Create</button>
         </EditForm>
     </div>
@@ -52,13 +37,34 @@
 @code {
     [SupplyParameterFromForm]
     private Wishlist Wishlist { get; set; } = new();
+    private OnlineArtGalleryUser user = default!;
+    private string? username;
 
     // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    protected override async Task OnInitializedAsync()
+    {
+        var claimsPrincipal = SignInManager.Context.User;
+        if (claimsPrincipal != null)
+        {
+            user = await UserManager.GetUserAsync(claimsPrincipal);
+            username = user?.UserName ?? "Unknown";
+        }
+        else
+        {
+            username = "Unknown";
+        }
+        await base.OnInitializedAsync();
+    }
     private async Task AddWishlist()
     {
         using var context = DbFactory.CreateDbContext();
+        Wishlist.DateUpdated = DateTime.Now;
+        Wishlist.DateCreated = DateTime.Now;
+        Wishlist.CreatedBy = username;
+        Wishlist.UpdatedBy = username;
         context.Wishlist.Add(Wishlist);
         await context.SaveChangesAsync();
         NavigationManager.NavigateTo("/wishlist");
+
     }
 }

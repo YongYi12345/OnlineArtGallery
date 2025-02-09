@@ -1,4 +1,4 @@
-﻿@page "/wishlist/details"
+﻿@page "/auction/details"
 @using Microsoft.EntityFrameworkCore
 @using OnlineArtGallery.Domain
 @inject IDbContextFactory<OnlineArtGallery.Data.OnlineArtGalleryContext> DbFactory
@@ -9,34 +9,35 @@
 <h1>Details</h1>
 
 <div>
-    <h2>Wishlist</h2>
+    <h2>Auction</h2>
     <hr />
-    @if (wishlist is null)
+    @if (auction is null)
     {
         <p><em>Loading...</em></p>
     }
     else {
         <dl class="row">
-            <dt class="col-sm-2">ArtworkId</dt>
-            <dd class="col-sm-10">@wishlist.ArtworkId</dd>
+            <dt class="col-sm-2">StartingBid</dt>
+            <dd class="col-sm-10">@auction.StartingBid</dd>
             <dt class="col-sm-2">DateCreated</dt>
-            <dd class="col-sm-10">@wishlist.DateCreated</dd>
+            <dd class="col-sm-10">@auction.DateCreated</dd>
             <dt class="col-sm-2">DateUpdated</dt>
-            <dd class="col-sm-10">@wishlist.DateUpdated</dd>
+            <dd class="col-sm-10">@auction.DateUpdated</dd>
             <dt class="col-sm-2">CreatedBy</dt>
-            <dd class="col-sm-10">@wishlist.CreatedBy</dd>
+            <dd class="col-sm-10">@auction.CreatedBy</dd>
             <dt class="col-sm-2">UpdatedBy</dt>
-            <dd class="col-sm-10">@wishlist.UpdatedBy</dd>
+            <dd class="col-sm-10">@auction.UpdatedBy</dd>
+      
         </dl>
         <div>
-            <a href="@($"/wishlist/edit?id={wishlist.Id}")">Edit</a> |
-            <a href="@($"/wishlist")">Back to List</a>
+            <a href="@($"/auction/edit?id={auction.Id}")">Edit</a> |
+            <a href="@($"/auction")">Back to List</a>
         </div>
     }
 </div>
 
 @code {
-    private Wishlist? wishlist;
+    private Auction? auction;
 
     [SupplyParameterFromQuery]
     private int Id { get; set; }
@@ -44,9 +45,9 @@
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        wishlist = await context.Wishlist.FirstOrDefaultAsync(m => m.Id == Id);
+        auction = await context.Auction.FirstOrDefaultAsync(m => m.Id == Id);
 
-        if (wishlist is null)
+        if (auction is null)
         {
             NavigationManager.NavigateTo("notfound");
         }

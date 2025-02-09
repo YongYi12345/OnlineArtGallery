@@ -8,6 +8,8 @@
 @inject UserManager<OnlineArtGalleryUser> UserManager
 @inject SignInManager<OnlineArtGalleryUser> SignInManager
 
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">OnlineArtGallery</a>
@@ -20,7 +22,7 @@
     <nav class="flex-column">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+                <span class="fa fa-home" aria-hidden="true"></span> -Home
             </NavLink>
         </div>
 
@@ -28,33 +30,34 @@
             <Authorized>
 
                 <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="search">
-                        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Search
+                    <NavLink class="nav-link" href="searchpage">
+                        <span class="fa fa-search" </span>  -Search
                     </NavLink>
+                    
                 </div>
 
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="create">
-                        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Create
+                        <span class="fa fa-cloud" aria-hidden="true"></span> -Create
                     </NavLink>
                 </div>
 
 
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="wishlist">
-                        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Wishlist
+                        <span class="fa fa-heart" aria-hidden="true"></span> -Wishlist
                     </NavLink>
                 </div>
 
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="discussion">
-                        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Discussion
+                        <span class="fa fa-male" aria-hidden="true"></span> -Discussion
                     </NavLink>
                 </div>
 
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="auction">
-                        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Auction
+                        <span class="fa-solid fa-refresh" aria-hidden="true"></span> -Auction
                     </NavLink>
                 </div>
 
@@ -67,6 +70,8 @@
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="setting">
                         <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Setting
+                    <NavLink class="nav-link" href="settingpages">
+                        <span class="fa fa-bars" aria-hidden="true"></span> -Settings
                     </NavLink>
                 </div>
                
