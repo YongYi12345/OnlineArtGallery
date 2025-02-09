@@ -1,14 +1,7 @@
-﻿@page "/search"
+﻿@page "/searchpage"
+@using Microsoft.EntityFrameworkCore
+@using OnlineArtGallery.Domain
+@inject IDbContextFactory<OnlineArtGallery.Data.OnlineArtGalleryContext> DbFactory
+@inject NavigationManager NavigationManager
 
-<h3>Search</h3>
-
-@code {
-    <div class="container">
-        <form>
-            <input type="text" placeholder="what are you looking for?">
-            <button type="submit">Search</button>
-
-        </form>
-    </div>
-
-}
+<PageTitle>Search</PageTitle>

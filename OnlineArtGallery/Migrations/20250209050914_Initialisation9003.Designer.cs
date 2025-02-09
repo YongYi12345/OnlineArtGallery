@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineArtGallery.Data;
 
@@ -11,9 +12,11 @@ using OnlineArtGallery.Data;
 namespace OnlineArtGallery.Migrations
 {
     [DbContext(typeof(OnlineArtGalleryContext))]
-    partial class OnlineArtGalleryContextModelSnapshot : ModelSnapshot
+    [Migration("20250209050914_Initialisation9003")]
+    partial class Initialisation9003
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -230,7 +233,7 @@ namespace OnlineArtGallery.Migrations
                         {
                             Id = "3781efa7-66dc-47f0-860f-e506d04102e4",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "e2715461-98b2-46a8-807d-162cf9241f74",
+                            ConcurrencyStamp = "2724cf05-6adb-49bb-b79b-192209ebc636",
                             Email = "admin@localhost.com",
                             EmailConfirmed = true,
                             FirstName = "Admin",
@@ -238,9 +241,9 @@ namespace OnlineArtGallery.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@LOCALHOST.COM",
                             NormalizedUserName = "ADMIN@LOCALHOST.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAECuN6fPspk5SHLcno0/OKT4jOPsQO0cuJ0zwDSOs4cwSinGIpQDUadPZ7nEJGT63vw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJpM8bUTJ8/Mxsfgp/q9Gb9J0tem6m920dzDRLI37ntv6qCaKez4SHBnCVyrJzeJ3Q==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "ad69adf9-a8f1-4b5a-b2d4-ace69e42fba0",
+                            SecurityStamp = "6c203d23-510d-4de8-930e-7f279d5c78d3",
                             TwoFactorEnabled = false
                         });
                 });
@@ -314,9 +317,6 @@ namespace OnlineArtGallery.Migrations
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ImagePath")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("PaymentId")
                         .HasColumnType("int");
 
@@ -332,6 +332,38 @@ namespace OnlineArtGallery.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Auction");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 888,
+                            ArtworkId = 0,
+                            CreatedBy = "System",
+                            Date = 0.0,
+                            DateCreated = new DateTime(2025, 2, 9, 13, 9, 13, 112, DateTimeKind.Local).AddTicks(2527),
+                            DateUpdated = new DateTime(2025, 2, 9, 13, 9, 13, 112, DateTimeKind.Local).AddTicks(2541),
+                            Description = 0.0,
+                            HighestBid = 0,
+                            PaymentId = 0,
+                            ShippingId = 0,
+                            StartingBid = 1,
+                            UpdatedBy = "System"
+                        },
+                        new
+                        {
+                            Id = 999,
+                            ArtworkId = 0,
+                            CreatedBy = "System",
+                            Date = 0.0,
+                            DateCreated = new DateTime(2025, 2, 9, 13, 9, 13, 112, DateTimeKind.Local).AddTicks(2543),
+                            DateUpdated = new DateTime(2025, 2, 9, 13, 9, 13, 112, DateTimeKind.Local).AddTicks(2544),
+                            Description = 0.0,
+                            HighestBid = 0,
+                            PaymentId = 0,
+                            ShippingId = 0,
+                            StartingBid = 2,
+                            UpdatedBy = "System"
+                        });
                 });
 
             modelBuilder.Entity("OnlineArtGallery.Domain.Comment", b =>
@@ -459,6 +491,26 @@ namespace OnlineArtGallery.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Wishlist");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ArtworkId = 0,
+                            CreatedBy = "System",
+                            DateCreated = new DateTime(2025, 2, 9, 13, 9, 13, 112, DateTimeKind.Local).AddTicks(2774),
+                            DateUpdated = new DateTime(2025, 2, 9, 13, 9, 13, 112, DateTimeKind.Local).AddTicks(2775),
+                            UpdatedBy = "System"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ArtworkId = 1,
+                            CreatedBy = "System",
+                            DateCreated = new DateTime(2025, 2, 9, 13, 9, 13, 112, DateTimeKind.Local).AddTicks(2777),
+                            DateUpdated = new DateTime(2025, 2, 9, 13, 9, 13, 112, DateTimeKind.Local).AddTicks(2778),
+                            UpdatedBy = "System"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

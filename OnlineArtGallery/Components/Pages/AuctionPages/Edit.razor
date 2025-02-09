@@ -1,4 +1,4 @@
-﻿@page "/auctions/edit"
+﻿@page "/auction/edit"
 @using Microsoft.EntityFrameworkCore
 @using OnlineArtGallery.Domain
 @inject IDbContextFactory<OnlineArtGallery.Data.OnlineArtGalleryContext> DbFactory
@@ -28,11 +28,6 @@ else
                     <ValidationMessage For="() => Auction.StartingBid" class="text-danger" />
                 </div>
                 <div class="mb-3">
-                    <label for="date" class="form-label">Date:</label>
-                    <InputNumber id="date" @bind-Value="Auction.Date" class="form-control" />
-                    <ValidationMessage For="() => Auction.Date" class="text-danger" />
-                </div>
-                <div class="mb-3">
                     <label for="datecreated" class="form-label">DateCreated:</label>
                     <InputDate id="datecreated" @bind-Value="Auction.DateCreated" class="form-control" />
                     <ValidationMessage For="() => Auction.DateCreated" class="text-danger" />
@@ -59,7 +54,7 @@ else
 }
 
 <div>
-    <a href="/auctions">Back to List</a>
+    <a href="/auction">Back to List</a>
 </div>
 
 @code {
@@ -103,7 +98,7 @@ else
             }
         }
 
-        NavigationManager.NavigateTo("/auctions");
+        NavigationManager.NavigateTo("/auction");
     }
 
     private bool AuctionExists(int id)

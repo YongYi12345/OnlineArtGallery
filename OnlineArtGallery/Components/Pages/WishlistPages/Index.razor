@@ -5,17 +5,35 @@
 @using OnlineArtGallery.Data
 @implements IAsyncDisposable
 @inject IDbContextFactory<OnlineArtGallery.Data.OnlineArtGalleryContext> DbFactory
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Identity
+
+
+
+
+@inject UserManager<OnlineArtGalleryUser> UserManager
+@inject SignInManager<OnlineArtGalleryUser> SignInManager
 
 <PageTitle>Index</PageTitle>
 
-<h1>Index</h1>
+<div class="w3-padding w3-xlarge w3-pink">
+    <h1>Wishlist</h1>
+</div>
+
 
 <p>
-    <a href="wishlists/create">Create New</a>
+    <a href="wishlist/create">Add to Wishlist</a>
 </p>
 
-<QuickGrid Class="table" Items="context.Wishlist">
+<QuickGrid Class="table" Items="filteredWishlist">
     <PropertyColumn Property="wishlist => wishlist.ArtworkId" />
+    <TemplateColumn Context="wishlist" Title="Artwork">
+        <img src="@GetArtworkPath(wishlist.ArtworkId)" id="image" height="150px" width="150px" />
+    </TemplateColumn>
+
+    <TemplateColumn Context="wishlist" Title="Artwork">
+        @GetArtworkString(wishlist.ArtworkId)
+    </TemplateColumn>
     <PropertyColumn Property="wishlist => wishlist.DateCreated" />
     <PropertyColumn Property="wishlist => wishlist.DateUpdated" />
     <PropertyColumn Property="wishlist => wishlist.CreatedBy" />
@@ -26,17 +44,56 @@
         <a href="@($"wishlist/details?id={wishlist.Id}")">Details</a> |
         <a href="@($"wishlist/delete?id={wishlist.Id}")">Delete</a>
     </TemplateColumn>
+
 </QuickGrid>
 
 @code {
     private OnlineArtGalleryContext context = default!;
 
+    private Dictionary<int, Artwork> ArtworkDict = new Dictionary<int,Artwork >();
 
+    private OnlineArtGalleryUser user = default!;
+    private IQueryable<Wishlist> filteredWishlist = Enumerable.Empty<Wishlist>().AsQueryable(); // Initialize empt
+    private string? username;
+    
 
-    protected override void OnInitialized()
+    private string GetArtworkString(int artworkId)
     {
-        context = DbFactory.CreateDbContext();
+        var artwork = context.Artwork.FirstOrDefault(v => v.Id == artworkId);
+        return artwork == null ? string.Empty :$"{ArtworkDict[artworkId].Name}";
+    }   
+    private string GetArtworkPath(int artworkId)
+    {
+        var artwork = context.Artwork.FirstOrDefault(v => v.Id == artworkId);
+        return artwork == null ? string.Empty :$"{ArtworkDict[artworkId].ImagePath}";
+
     }
 
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var claimsPrincipal = SignInManager.Context.User;
+        if (claimsPrincipal != null)
+        {
+            user = await UserManager.GetUserAsync(claimsPrincipal);
+            username = user?.UserName ?? "Unknown";
+        }
+        else
+        {
+            username = "Unknown";
+        }
+        context = DbFactory.CreateDbContext();
+        filteredWishlist = context.Wishlist.Where(w => w.CreatedBy == username);
+
+        ArtworkDict = context.Artwork.ToDictionary(o => o.Id, o => o);
+
+
+        await base.OnInitializedAsync();
+    }
+
+
+ 
     public async ValueTask DisposeAsync() => await context.DisposeAsync();
 }

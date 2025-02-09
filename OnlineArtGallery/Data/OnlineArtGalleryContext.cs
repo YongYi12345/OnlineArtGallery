@@ -16,20 +16,19 @@ namespace OnlineArtGallery.Data
         {
             base.OnModelCreating(builder);
 
-//<<<<<<< HEAD
-            //builder.ApplyConfiguration(new ArtworkSeed());
-            builder.ApplyConfiguration(new AuctionSeed());
-            builder.ApplyConfiguration(new WishlistSeed());
+
+
+            
             builder.ApplyConfiguration(new UserSeed());
         }
         public DbSet<OnlineArtGallery.Domain.Auction> Auction { get; set; } = default!;
         public DbSet<OnlineArtGallery.Domain.Discussion> Discussion { get; set; } = default!;
-        public DbSet<OnlineArtGallery.Domain.Comment> Comment { get; set; } = default!;
-        
-//>>>>>>> 01fc31ebfc7707597681e57ed1dae173ad458af8
-//=======
-           
-        }
-        
-//>>>>>>> 01fc31ebfc7707597681e57ed1dae173ad458af8
+        public DbSet<OnlineArtGallery.Domain.Comment> Comment { get; set; } = default!;     
+       
     }
+
+}
+      
+        
+
+    

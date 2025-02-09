@@ -92,56 +92,12 @@
     [SupplyParameterFromForm]
     private Artwork Artwork { get; set; } = new();
 
-    private string? discription;
+    // private string? discription;
 
     // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
     private async Task AddArtwork()
     {
-        // if (Artwork.Image != null)
-        // {
-        //     Save the image to the server and store the path
-        //     var folderPath = Path.Combine(WebHostEnvironment.WebRootPath, "images");
-
-        //     discription = $"Saving to folder: {folderPath}";
-
-        //     if (!Directory.Exists(folderPath))
-        //     {
-        //         discription = "Folder does not exist. Creating folder...";
-        //         Directory.CreateDirectory(folderPath);
-        //     }
-
-        //     var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(Artwork.Image.Name);
-
-        //     var filePath = Path.Combine(folderPath, uniqueFileName);
-        //     discription = $"File path: {filePath}";
-
-            // using (var fileStream = new FileStream(filePath, FileMode.Create))
-            // {
-            //     Copy the uploaded file to the server directory
-            //     await Artwork.Image.OpenReadStream().CopyToAsync(fileStream);
-            // }
-
-            // Store the relative image path in the database
-            // Artwork.ImagePath = $"/images/{uniqueFileName}";
-
-        //     try
-        //     {
-        //         using (var fileStream = new FileStream(filePath, FileMode.Create))
-        //         {
-        //             await Artwork.Image.OpenReadStream().CopyToAsync(fileStream);
-        //             discription = "Image saved successfully.";
-        //         }
-        //         Artwork.ImagePath = $"/images/{uniqueFileName}";
-        //         discription = $"ImagePath set to: {Artwork.ImagePath}";
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         discription = $"Error saving image: {ex.Message}";
-        //     }
-        // }
-        // else
-        // {
-        //     discription = "Artwork.Image == null";
+     
         // }
         using var context = DbFactory.CreateDbContext();
         Artwork.DateUpdated = DateTime.Now;

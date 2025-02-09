@@ -5,5 +5,6 @@ namespace OnlineArtGallery.Domain
     public class Wishlist : BaseDomainModel
     {
         public int ArtworkId { get; set; }
+
     }
 }

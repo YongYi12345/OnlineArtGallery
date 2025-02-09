@@ -1,4 +1,4 @@
-﻿@page "/auctions/details"
+﻿@page "/auction/details"
 @using Microsoft.EntityFrameworkCore
 @using OnlineArtGallery.Domain
 @inject IDbContextFactory<OnlineArtGallery.Data.OnlineArtGalleryContext> DbFactory
@@ -19,8 +19,6 @@
         <dl class="row">
             <dt class="col-sm-2">StartingBid</dt>
             <dd class="col-sm-10">@auction.StartingBid</dd>
-            <dt class="col-sm-2">Date</dt>
-            <dd class="col-sm-10">@auction.Date</dd>
             <dt class="col-sm-2">DateCreated</dt>
             <dd class="col-sm-10">@auction.DateCreated</dd>
             <dt class="col-sm-2">DateUpdated</dt>
@@ -29,10 +27,11 @@
             <dd class="col-sm-10">@auction.CreatedBy</dd>
             <dt class="col-sm-2">UpdatedBy</dt>
             <dd class="col-sm-10">@auction.UpdatedBy</dd>
+      
         </dl>
         <div>
-            <a href="@($"/auctions/edit?id={auction.Id}")">Edit</a> |
-            <a href="@($"/auctions")">Back to List</a>
+            <a href="@($"/auction/edit?id={auction.Id}")">Edit</a> |
+            <a href="@($"/auction")">Back to List</a>
         </div>
     }
 </div>

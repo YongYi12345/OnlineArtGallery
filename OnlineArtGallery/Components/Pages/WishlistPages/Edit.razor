@@ -1,4 +1,4 @@
-﻿@page "/wishlists/edit"
+﻿@page "/wishlist/edit"
 @using Microsoft.EntityFrameworkCore
 @using OnlineArtGallery.Domain
 @inject IDbContextFactory<OnlineArtGallery.Data.OnlineArtGalleryContext> DbFactory
@@ -54,7 +54,7 @@ else
 }
 
 <div>
-    <a href="/wishlists">Back to List</a>
+    <a href="/wishlist">Back to List</a>
 </div>
 
 @code {
@@ -98,7 +98,7 @@ else
             }
         }
 
-        NavigationManager.NavigateTo("/wishlists");
+        NavigationManager.NavigateTo("/wishlist");
     }
 
     private bool WishlistExists(int id)

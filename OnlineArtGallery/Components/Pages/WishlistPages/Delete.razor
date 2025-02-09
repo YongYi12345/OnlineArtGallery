@@ -1,4 +1,4 @@
-﻿@page "/wishlists/delete"
+﻿@page "/wishlist/delete"
 @using Microsoft.EntityFrameworkCore
 @using OnlineArtGallery.Domain
 @inject IDbContextFactory<OnlineArtGallery.Data.OnlineArtGalleryContext> DbFactory
@@ -39,7 +39,7 @@
         </dl>
         <EditForm method="post" Model="wishlist" OnValidSubmit="DeleteWishlist" FormName="delete" Enhance>
             <button type="submit" class="btn btn-danger" disabled="@(wishlist is null)">Delete</button> |
-            <a href="/wishlists">Back to List</a>
+            <a href="/wishlist">Back to List</a>
         </EditForm>
     }
 </div>
@@ -66,6 +66,6 @@
         using var context = DbFactory.CreateDbContext();
         context.Wishlist.Remove(wishlist!);
         await context.SaveChangesAsync();
-        NavigationManager.NavigateTo("/wishlists");
+        NavigationManager.NavigateTo("/wishlist");
     }
 }

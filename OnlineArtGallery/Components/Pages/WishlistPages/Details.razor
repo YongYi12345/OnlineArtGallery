@@ -1,4 +1,4 @@
-﻿@page "/wishlists/details"
+﻿@page "/wishlist/details"
 @using Microsoft.EntityFrameworkCore
 @using OnlineArtGallery.Domain
 @inject IDbContextFactory<OnlineArtGallery.Data.OnlineArtGalleryContext> DbFactory
@@ -29,8 +29,8 @@
             <dd class="col-sm-10">@wishlist.UpdatedBy</dd>
         </dl>
         <div>
-            <a href="@($"/wishlists/edit?id={wishlist.Id}")">Edit</a> |
-            <a href="@($"/wishlists")">Back to List</a>
+            <a href="@($"/wishlist/edit?id={wishlist.Id}")">Edit</a> |
+            <a href="@($"/wishlist")">Back to List</a>
         </div>
     }
 </div>

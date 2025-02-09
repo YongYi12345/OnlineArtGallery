@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineArtGallery.Data;
 
@@ -11,9 +12,11 @@ using OnlineArtGallery.Data;
 namespace OnlineArtGallery.Migrations
 {
     [DbContext(typeof(OnlineArtGalleryContext))]
-    partial class OnlineArtGalleryContextModelSnapshot : ModelSnapshot
+    [Migration("20250208091928_initialisation9002")]
+    partial class initialisation9002
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -230,7 +233,7 @@ namespace OnlineArtGallery.Migrations
                         {
                             Id = "3781efa7-66dc-47f0-860f-e506d04102e4",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "e2715461-98b2-46a8-807d-162cf9241f74",
+                            ConcurrencyStamp = "314216c5-bebe-4695-9803-6c28f30f5032",
                             Email = "admin@localhost.com",
                             EmailConfirmed = true,
                             FirstName = "Admin",
@@ -238,9 +241,9 @@ namespace OnlineArtGallery.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@LOCALHOST.COM",
                             NormalizedUserName = "ADMIN@LOCALHOST.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAECuN6fPspk5SHLcno0/OKT4jOPsQO0cuJ0zwDSOs4cwSinGIpQDUadPZ7nEJGT63vw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPkjyRNwMAYPZXNUsHczFUwGhJXU9js6b2yvpCUoAaS7AmWrDNihRfN+PsvemF2w4w==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "ad69adf9-a8f1-4b5a-b2d4-ace69e42fba0",
+                            SecurityStamp = "ea8b54d1-81ed-4adc-b812-8ece0062002b",
                             TwoFactorEnabled = false
                         });
                 });
@@ -314,15 +317,6 @@ namespace OnlineArtGallery.Migrations
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ImagePath")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PaymentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ShippingId")
-                        .HasColumnType("int");
-
                     b.Property<int>("StartingBid")
                         .HasColumnType("int");
 
@@ -332,6 +326,34 @@ namespace OnlineArtGallery.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Auction");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 888,
+                            ArtworkId = 0,
+                            CreatedBy = "System",
+                            Date = 0.0,
+                            DateCreated = new DateTime(2025, 2, 8, 17, 19, 27, 596, DateTimeKind.Local).AddTicks(4885),
+                            DateUpdated = new DateTime(2025, 2, 8, 17, 19, 27, 596, DateTimeKind.Local).AddTicks(4901),
+                            Description = 0.0,
+                            HighestBid = 0,
+                            StartingBid = 1,
+                            UpdatedBy = "System"
+                        },
+                        new
+                        {
+                            Id = 999,
+                            ArtworkId = 0,
+                            CreatedBy = "System",
+                            Date = 0.0,
+                            DateCreated = new DateTime(2025, 2, 8, 17, 19, 27, 596, DateTimeKind.Local).AddTicks(4904),
+                            DateUpdated = new DateTime(2025, 2, 8, 17, 19, 27, 596, DateTimeKind.Local).AddTicks(4905),
+                            Description = 0.0,
+                            HighestBid = 0,
+                            StartingBid = 2,
+                            UpdatedBy = "System"
+                        });
                 });
 
             modelBuilder.Entity("OnlineArtGallery.Domain.Comment", b =>
@@ -450,15 +472,32 @@ namespace OnlineArtGallery.Migrations
                     b.Property<DateTime>("DateUpdated")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("ImagePath")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Wishlist");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ArtworkId = 0,
+                            CreatedBy = "System",
+                            DateCreated = new DateTime(2025, 2, 8, 17, 19, 27, 596, DateTimeKind.Local).AddTicks(5583),
+                            DateUpdated = new DateTime(2025, 2, 8, 17, 19, 27, 596, DateTimeKind.Local).AddTicks(5584),
+                            UpdatedBy = "System"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ArtworkId = 1,
+                            CreatedBy = "System",
+                            DateCreated = new DateTime(2025, 2, 8, 17, 19, 27, 596, DateTimeKind.Local).AddTicks(5587),
+                            DateUpdated = new DateTime(2025, 2, 8, 17, 19, 27, 596, DateTimeKind.Local).AddTicks(5588),
+                            UpdatedBy = "System"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

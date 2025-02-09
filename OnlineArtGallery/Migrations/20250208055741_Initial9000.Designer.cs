@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineArtGallery.Data;
 
@@ -11,9 +12,11 @@ using OnlineArtGallery.Data;
 namespace OnlineArtGallery.Migrations
 {
     [DbContext(typeof(OnlineArtGalleryContext))]
-    partial class OnlineArtGalleryContextModelSnapshot : ModelSnapshot
+    [Migration("20250208055741_Initial9000")]
+    partial class Initial9000
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -230,7 +233,7 @@ namespace OnlineArtGallery.Migrations
                         {
                             Id = "3781efa7-66dc-47f0-860f-e506d04102e4",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "e2715461-98b2-46a8-807d-162cf9241f74",
+                            ConcurrencyStamp = "a18e9671-97a7-4643-99b5-f62916438bd1",
                             Email = "admin@localhost.com",
                             EmailConfirmed = true,
                             FirstName = "Admin",
@@ -238,9 +241,9 @@ namespace OnlineArtGallery.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@LOCALHOST.COM",
                             NormalizedUserName = "ADMIN@LOCALHOST.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAECuN6fPspk5SHLcno0/OKT4jOPsQO0cuJ0zwDSOs4cwSinGIpQDUadPZ7nEJGT63vw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJkYSAQBfU7uWCAzV84manpeXDW87CtLkbTOpOhsu7rD1rzptUGmfvquIoxB3+15nA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "ad69adf9-a8f1-4b5a-b2d4-ace69e42fba0",
+                            SecurityStamp = "8d54b1fb-de24-4cf6-9ded-42d49f6face0",
                             TwoFactorEnabled = false
                         });
                 });
@@ -290,9 +293,6 @@ namespace OnlineArtGallery.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ArtworkId")
-                        .HasColumnType("int");
-
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -314,15 +314,6 @@ namespace OnlineArtGallery.Migrations
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ImagePath")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PaymentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ShippingId")
-                        .HasColumnType("int");
-
                     b.Property<int>("StartingBid")
                         .HasColumnType("int");
 
@@ -332,6 +323,32 @@ namespace OnlineArtGallery.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Auction");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 888,
+                            CreatedBy = "System",
+                            Date = 0.0,
+                            DateCreated = new DateTime(2025, 2, 8, 13, 57, 40, 344, DateTimeKind.Local).AddTicks(3237),
+                            DateUpdated = new DateTime(2025, 2, 8, 13, 57, 40, 344, DateTimeKind.Local).AddTicks(3253),
+                            Description = 0.0,
+                            HighestBid = 0,
+                            StartingBid = 1,
+                            UpdatedBy = "System"
+                        },
+                        new
+                        {
+                            Id = 999,
+                            CreatedBy = "System",
+                            Date = 0.0,
+                            DateCreated = new DateTime(2025, 2, 8, 13, 57, 40, 344, DateTimeKind.Local).AddTicks(3256),
+                            DateUpdated = new DateTime(2025, 2, 8, 13, 57, 40, 344, DateTimeKind.Local).AddTicks(3257),
+                            Description = 0.0,
+                            HighestBid = 0,
+                            StartingBid = 2,
+                            UpdatedBy = "System"
+                        });
                 });
 
             modelBuilder.Entity("OnlineArtGallery.Domain.Comment", b =>
@@ -450,15 +467,32 @@ namespace OnlineArtGallery.Migrations
                     b.Property<DateTime>("DateUpdated")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("ImagePath")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Wishlist");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ArtworkId = 0,
+                            CreatedBy = "System",
+                            DateCreated = new DateTime(2025, 2, 8, 13, 57, 40, 344, DateTimeKind.Local).AddTicks(3533),
+                            DateUpdated = new DateTime(2025, 2, 8, 13, 57, 40, 344, DateTimeKind.Local).AddTicks(3534),
+                            UpdatedBy = "System"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ArtworkId = 1,
+                            CreatedBy = "System",
+                            DateCreated = new DateTime(2025, 2, 8, 13, 57, 40, 344, DateTimeKind.Local).AddTicks(3536),
+                            DateUpdated = new DateTime(2025, 2, 8, 13, 57, 40, 344, DateTimeKind.Local).AddTicks(3536),
+                            UpdatedBy = "System"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
